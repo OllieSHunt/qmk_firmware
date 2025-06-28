@@ -1,4 +1,6 @@
 # Bootloader selection
 BOOTLOADER = rp2040
-
 BOARD = GENERIC_RP_RP2040
+
+# RGB LEDs
+WS2812_DRIVER = vendor
