@@ -28,3 +28,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 // void keyboard_post_init_user(void) {
 // }
+
+#ifdef OLED_ENABLE
+
+bool oled_task_user(void) {
+    oled_write_ln_P(PSTR("Hello World!"), false);
+    oled_write_ln_P(PSTR(""), false);
+    oled_write_ln_P(PSTR("I am a OLED display"), false);
+    oled_write_ln_P(PSTR("A realy realy realy realy realy realy realy realy long line of text!"), false);
+
+    oled_scroll_set_area(3, 3);
+    oled_scroll_set_speed(5);
+    oled_scroll_right();
+
+    return false;
+}
+
+#endif

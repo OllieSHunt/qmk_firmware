@@ -1,6 +1,29 @@
-// LED config
+// I2C config
+#define I2C_DRIVER I2CD0
+#define I2C1_SCL_PIN GP17
+#define I2C1_SDA_PIN GP16
+
+// OLED config
+#define OLED_IC OLED_IC_SSD1306
+#define OLED_DISPLAY_128X64 TRUE
+
+#define OLED_BRIGHTNESS 255
+
+#define OLED_TIMEOUT 5000
+// TODO: Fadeout not woking for some reason
+// #define OLED_FADE_OUT TRUE
+// #define OLED_FADE_OUT_INTERVAL 5
+
+// #define OLED_FONT_H
+// #define OLED_FONT_START
+// #define OLED_FONT_END
+// #define OLED_FONT_WIDTH
+// #define OLED_FONT_HEIGHT
+
+// LED data pin
 #define WS2812_DI_PIN GP15
 
+// Enable LED matrix paterns
 #define ENABLE_RGB_MATRIX_NONE
 #define ENABLE_RGB_MATRIX_SOLID_COLOR               // Static single hue, no speed support
 // #define ENABLE_RGB_MATRIX_ALPHAS_MODS               // Static dual hue, speed is hue for secondary hue
@@ -54,6 +77,7 @@
 // #define ENABLE_RGB_MATRIX_RIVERFLOW                 // Modification to breathing animation, offset's animation depending on key location to simulate a river flowing
 // #define ENABLE_RB_MATRIX_EFFECT_MAX
 
+// LED config
 #define RGB_MATRIX_DEFAULT_ON true
 #define RGB_MATRIX_MAXIMUM_BRIGHTNESS 100
 #define RGB_MATRIX_DEFAULT_HUE 0
