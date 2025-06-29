@@ -3,23 +3,6 @@
 #define I2C1_SCL_PIN GP17
 #define I2C1_SDA_PIN GP16
 
-// OLED config
-#define OLED_IC OLED_IC_SSD1306
-#define OLED_DISPLAY_128X64 TRUE
-
-#define OLED_BRIGHTNESS 255
-
-#define OLED_TIMEOUT 5000
-// TODO: Fadeout not woking for some reason
-// #define OLED_FADE_OUT TRUE
-// #define OLED_FADE_OUT_INTERVAL 5
-
-// #define OLED_FONT_H
-// #define OLED_FONT_START
-// #define OLED_FONT_END
-// #define OLED_FONT_WIDTH
-// #define OLED_FONT_HEIGHT
-
 // LED data pin
 #define WS2812_DI_PIN GP15
 
@@ -79,7 +62,7 @@
 
 // LED config
 #define RGB_MATRIX_DEFAULT_ON true
-#define RGB_MATRIX_MAXIMUM_BRIGHTNESS 100
+#define RGB_MATRIX_MAXIMUM_BRIGHTNESS 50 // TODO: change max brighness
 #define RGB_MATRIX_DEFAULT_HUE 0
 #define RGB_MATRIX_DEFAULT_SAT 255
 // #define RGB_MATRIX_DEFAULT_MODE RGB_MATRIX_SOLID_COLOR
