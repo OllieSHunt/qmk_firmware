@@ -48,7 +48,7 @@
 // #define ENABLE_RGB_MATRIX_SOLID_REACTIVE_CROSS      // Hue & value pulse the same column and row of a single key hit then fades value out
 // #define ENABLE_RGB_MATRIX_SOLID_REACTIVE_MULTICROSS // Hue & value pulse the same column and row of multiple key hits then fades value out
 // #define ENABLE_RGB_MATRIX_SOLID_REACTIVE_NEXUS      // Hue & value pulse away on the same column and row of a single key hit then fades value out
-// #define ENABLE_RGB_MATRIX_SOLID_REACTIVE_MULTINEXUS // Hue & value pulse away on the same column and row of multiple key hits then fades value out
+#define ENABLE_RGB_MATRIX_SOLID_REACTIVE_MULTINEXUS // Hue & value pulse away on the same column and row of multiple key hits then fades value out
 // #define ENABLE_RGB_MATRIX_SPLASH                    // Full gradient & value pulse away from a single key hit then fades value out
 // #define ENABLE_RGB_MATRIX_MULTISPLASH               // Full gradient & value pulse away from multiple key hits then fades value out
 // #define ENABLE_RGB_MATRIX_SOLID_SPLASH              // Hue & value pulse away from a single key hit then fades value out
@@ -60,13 +60,16 @@
 // #define ENABLE_RGB_MATRIX_RIVERFLOW                 // Modification to breathing animation, offset's animation depending on key location to simulate a river flowing
 // #define ENABLE_RB_MATRIX_EFFECT_MAX
 
+// #define RGB_MATRIX_SOLID_REACTIVE_GRADIENT_MODE
+
 // LED config
 #define RGB_MATRIX_DEFAULT_ON true
 #define RGB_MATRIX_MAXIMUM_BRIGHTNESS 50 // TODO: change max brighness
-#define RGB_MATRIX_DEFAULT_HUE 0
-#define RGB_MATRIX_DEFAULT_SAT 255
+#define RGB_MATRIX_DEFAULT_HUE 42
+#define RGB_MATRIX_DEFAULT_SAT 213
 // #define RGB_MATRIX_DEFAULT_MODE RGB_MATRIX_SOLID_COLOR
-#define RGB_MATRIX_DEFAULT_MODE RGB_MATRIX_BAND_PINWHEEL_SAT
+// #define RGB_MATRIX_DEFAULT_MODE RGB_MATRIX_BAND_PINWHEEL_SAT
+#define RGB_MATRIX_DEFAULT_MODE RGB_MATRIX_SOLID_REACTIVE_MULTINEXUS
 #define RGB_MATRIX_SLEEP
 
 // #define RGB_TRIGGER_ON_KEYDOWN // TODO: Should I enable this?
