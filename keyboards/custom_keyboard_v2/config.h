@@ -16,7 +16,7 @@
 // #define ENABLE_RGB_MATRIX_BAND_SAT                  // Single hue band fading saturation scrolling left to right
 // #define ENABLE_RGB_MATRIX_BAND_VAL                  // Single hue band fading brightness scrolling left to right
 // #define ENABLE_RGB_MATRIX_BAND_PINWHEEL_SAT         // Single hue 3 blade spinning pinwheel fades saturation
-#define ENABLE_RGB_MATRIX_BAND_PINWHEEL_VAL         // Single hue 3 blade spinning pinwheel fades brightness
+// #define ENABLE_RGB_MATRIX_BAND_PINWHEEL_VAL         // Single hue 3 blade spinning pinwheel fades brightness
 // #define ENABLE_RGB_MATRIX_BAND_SPIRAL_SAT           // Single hue spinning spiral fades saturation
 // #define ENABLE_RGB_MATRIX_BAND_SPIRAL_VAL           // Single hue spinning spiral fades brightness
 // #define ENABLE_RGB_MATRIX_CYCLE_ALL                 // Full keyboard solid hue cycling through full gradient
@@ -48,11 +48,11 @@
 // #define ENABLE_RGB_MATRIX_SOLID_REACTIVE_CROSS      // Hue & value pulse the same column and row of a single key hit then fades value out
 // #define ENABLE_RGB_MATRIX_SOLID_REACTIVE_MULTICROSS // Hue & value pulse the same column and row of multiple key hits then fades value out
 // #define ENABLE_RGB_MATRIX_SOLID_REACTIVE_NEXUS      // Hue & value pulse away on the same column and row of a single key hit then fades value out
-#define ENABLE_RGB_MATRIX_SOLID_REACTIVE_MULTINEXUS // Hue & value pulse away on the same column and row of multiple key hits then fades value out
+// #define ENABLE_RGB_MATRIX_SOLID_REACTIVE_MULTINEXUS // Hue & value pulse away on the same column and row of multiple key hits then fades value out
 // #define ENABLE_RGB_MATRIX_SPLASH                    // Full gradient & value pulse away from a single key hit then fades value out
 // #define ENABLE_RGB_MATRIX_MULTISPLASH               // Full gradient & value pulse away from multiple key hits then fades value out
 // #define ENABLE_RGB_MATRIX_SOLID_SPLASH              // Hue & value pulse away from a single key hit then fades value out
-// #define ENABLE_RGB_MATRIX_SOLID_MULTISPLASH         // Hue & value pulse away from multiple key hits then fades value out
+#define ENABLE_RGB_MATRIX_SOLID_MULTISPLASH         // Hue & value pulse away from multiple key hits then fades value out
 // #define ENABLE_RGB_MATRIX_STARLIGHT                 // LEDs turn on and off at random at varying brightness, maintaining user set color
 // #define ENABLE_RGB_MATRIX_STARLIGHT_SMOOTH          // LEDs slowly increase and decrease in brightness randomly
 // #define ENABLE_RGB_MATRIX_STARLIGHT_DUAL_HUE        // LEDs turn on and off at random at varying brightness, modifies user set hue by +- 30
@@ -64,10 +64,9 @@
 
 // LED config
 #define RGB_MATRIX_DEFAULT_ON true
-#define RGB_MATRIX_MAXIMUM_BRIGHTNESS 50 // TODO: change max brighness
-#define RGB_MATRIX_DEFAULT_HUE 42
+#define RGB_MATRIX_MAXIMUM_BRIGHTNESS 150 // TODO: Adjust max brighness
+#define RGB_MATRIX_DEFAULT_HUE 132
 #define RGB_MATRIX_DEFAULT_SAT 213
-#define RGB_MATRIX_DEFAULT_MODE RGB_MATRIX_BAND_PINWHEEL_VAL
-#define RGB_MATRIX_SLEEP
-
-// #define RGB_TRIGGER_ON_KEYDOWN // TODO: Should I enable this?
+#define RGB_MATRIX_DEFAULT_MODE RGB_MATRIX_SOLID_MULTISPLASH
+#define RGB_MATRIX_SLEEP // Disable RGB on sleep
+#define RGB_TRIGGER_ON_KEYDOWN // The QMK docs say that this can cuase isues. So if I get any RGB issues, then try disabling this.
