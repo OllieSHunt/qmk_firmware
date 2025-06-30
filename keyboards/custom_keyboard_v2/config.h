@@ -15,8 +15,8 @@
 // #define ENABLE_RGB_MATRIX_BREATHING                 // Single hue brightness cycling animation
 // #define ENABLE_RGB_MATRIX_BAND_SAT                  // Single hue band fading saturation scrolling left to right
 // #define ENABLE_RGB_MATRIX_BAND_VAL                  // Single hue band fading brightness scrolling left to right
-#define ENABLE_RGB_MATRIX_BAND_PINWHEEL_SAT         // Single hue 3 blade spinning pinwheel fades saturation
-// #define ENABLE_RGB_MATRIX_BAND_PINWHEEL_VAL         // Single hue 3 blade spinning pinwheel fades brightness
+// #define ENABLE_RGB_MATRIX_BAND_PINWHEEL_SAT         // Single hue 3 blade spinning pinwheel fades saturation
+#define ENABLE_RGB_MATRIX_BAND_PINWHEEL_VAL         // Single hue 3 blade spinning pinwheel fades brightness
 // #define ENABLE_RGB_MATRIX_BAND_SPIRAL_SAT           // Single hue spinning spiral fades saturation
 // #define ENABLE_RGB_MATRIX_BAND_SPIRAL_VAL           // Single hue spinning spiral fades brightness
 // #define ENABLE_RGB_MATRIX_CYCLE_ALL                 // Full keyboard solid hue cycling through full gradient
@@ -67,9 +67,7 @@
 #define RGB_MATRIX_MAXIMUM_BRIGHTNESS 50 // TODO: change max brighness
 #define RGB_MATRIX_DEFAULT_HUE 42
 #define RGB_MATRIX_DEFAULT_SAT 213
-// #define RGB_MATRIX_DEFAULT_MODE RGB_MATRIX_SOLID_COLOR
-// #define RGB_MATRIX_DEFAULT_MODE RGB_MATRIX_BAND_PINWHEEL_SAT
-#define RGB_MATRIX_DEFAULT_MODE RGB_MATRIX_SOLID_REACTIVE_MULTINEXUS
+#define RGB_MATRIX_DEFAULT_MODE RGB_MATRIX_BAND_PINWHEEL_VAL
 #define RGB_MATRIX_SLEEP
 
 // #define RGB_TRIGGER_ON_KEYDOWN // TODO: Should I enable this?
