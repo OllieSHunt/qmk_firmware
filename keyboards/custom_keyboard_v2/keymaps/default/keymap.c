@@ -4,7 +4,10 @@
 #include QMK_KEYBOARD_H
 
 // Include image files
-#include "assets/static_ui.qgf.h"
+#include "assets/mode_dvorak.qgf.h"
+#include "assets/mode_qwerty.qgf.h"
+#include "assets/mode_stenography.qgf.h"
+#include "assets/speed_indicator.qgf.h"
 
 // The address of the SSD1306 128x65 OLED
 #define DISPLAY_I2C_ADDRESS 0x3C
@@ -17,7 +20,10 @@ static uint16_t display_sleep_timer; // I handle display sleep manually because 
 #define DISPLAY_TIMEOUT_CHECK_FREQ 1000
 
 // Handles to images
-static painter_image_handle_t static_ui;
+static painter_image_handle_t mode_dvorak;
+static painter_image_handle_t mode_qwerty;
+static painter_image_handle_t mode_stenography;
+static painter_image_handle_t speed_indicator;
 
 // All layers on the keyboard
 enum KeyboardLayers {
@@ -30,15 +36,15 @@ enum KeyboardLayers {
 // Keymap
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [DVK] = LAYOUT_ortho_5x10(
-        EE_CLR,  QK_BOOT, TG(SYM), _______, _______, _______, _______, _______, _______, _______,
-        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+        EE_CLR,  QK_BOOT, PDF(QWT),_______, _______, _______, _______, _______, _______, KC_D,
+        TG(SYM), _______, _______, _______, _______, _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
         KC_NO,   KC_NO,   _______, _______, _______, _______, _______, _______, KC_NO,   KC_NO
     ),
 
     [QWT] = LAYOUT_ortho_5x10(
-        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+        _______, _______, PDF(DVK),_______, _______, _______, _______, _______, _______, KC_Q,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
@@ -47,7 +53,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [SYM] = LAYOUT_ortho_5x10(
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
-        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+        _______, _______, _______, _______, _______, _______, _______, _______, _______, KC_S,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
         KC_NO,   KC_NO,   _______, _______, _______, _______, _______, _______, KC_NO,   KC_NO
@@ -55,7 +61,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [CTL] = LAYOUT_ortho_5x10(
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
-        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+        _______, _______, _______, _______, _______, _______, _______, _______, _______, KC_C,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
         KC_NO,   KC_NO,   _______, _______, _______, _______, _______, _______, KC_NO,   KC_NO
@@ -70,6 +76,19 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //     KC_NO,   KC_NO,   _______, _______, _______, _______, _______, _______, KC_NO,   KC_NO
     // )
 };
+
+// Draws the default state indicator
+void draw_default_layer_image(layer_state_t state) {
+    const int DEFAULT_STATE_IMAGE_X = 0;
+    const int DEFAULT_STATE_IMAGE_Y = 0;
+    
+    // Find what the default layer is
+    if (IS_LAYER_ON_STATE(state, DVK))      qp_drawimage(display, DEFAULT_STATE_IMAGE_X, DEFAULT_STATE_IMAGE_Y, mode_dvorak);
+    else if (IS_LAYER_ON_STATE(state, QWT)) qp_drawimage(display, DEFAULT_STATE_IMAGE_X, DEFAULT_STATE_IMAGE_Y, mode_qwerty);
+    else                                    qp_drawimage(display, DEFAULT_STATE_IMAGE_X, DEFAULT_STATE_IMAGE_Y, mode_stenography);
+
+    qp_flush(display);
+}
 
 // Uses a deferred callback to check if the display should go to sleep
 // https://docs.qmk.fm/custom_quantum_functions#deferred-executor-callbacks
@@ -98,10 +117,13 @@ void keyboard_post_init_kb(void) {
     defer_exec(DISPLAY_TIMEOUT_CHECK_FREQ, display_sleep_check, NULL);
 
     // Load images
-    static_ui = qp_load_image_mem(gfx_static_ui);
+    mode_dvorak = qp_load_image_mem(gfx_mode_dvorak);
+    mode_qwerty = qp_load_image_mem(gfx_mode_qwerty);
+    mode_stenography = qp_load_image_mem(gfx_mode_stenography);
+    speed_indicator = qp_load_image_mem(gfx_speed_indicator);
 
-    // Draw images
-    qp_drawimage(display, 0, 0, static_ui);
+    // Draw display for the first time
+    draw_default_layer_image(default_layer_state);
 }
 
 // This will run multiple times while keyboard is suspended
@@ -119,18 +141,25 @@ void suspend_wakeup_init_kb(void) {
 // Called on layer change
 layer_state_t layer_state_set_kb(layer_state_t state) {
     // TODO
-    switch (get_highest_layer(state)) {
-        case DVK:
-            break;
-        case QWT:
-            break;
-        case SYM:
-            break;
-        case CTL:
-            break;
-        default:
-            break;
-    }
+    // switch (get_highest_layer(state)) {
+    //     case DVK:
+    //         break;
+    //     case QWT:
+    //         break;
+    //     case SYM:
+    //         break;
+    //     case CTL:
+    //         break;
+    //     default:
+    //         break;
+    // }
+
+    return state;
+}
+
+// Called on default layer change and on keyboard init
+layer_state_t default_layer_state_set_kb(layer_state_t state) {
+    draw_default_layer_image(state);
 
     return state;
 }
