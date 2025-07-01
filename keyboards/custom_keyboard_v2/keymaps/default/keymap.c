@@ -2,12 +2,9 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 // TODO:
-// - Words per minute counter: https://docs.qmk.fm/features/wpm
+// - Make LEDs configurable via keycodes
 // - Stenography: https://docs.qmk.fm/features/stenography
-// - Fine-tune max LED brightness
 // - Autocorrect? https://docs.qmk.fm/features/autocorrect
-// - Caps word? https://docs.qmk.fm/features/caps_word
-// - Key lock? https://docs.qmk.fm/features/key_lock
 
 #include QMK_KEYBOARD_H
 
@@ -56,6 +53,12 @@ static painter_image_handle_t seperator_off_off_img;
 static painter_image_handle_t seperator_on_off_img;
 static painter_image_handle_t seperator_off_on_img;
 static painter_image_handle_t seperator_on_on_img;
+
+// Deferred executor tokens
+deferred_token display_sleep_check_token;
+deferred_token draw_wpm_bar_token;
+
+#define WPM_BAR_REDRAW_FREQ 100
 
 // All layers on the keyboard
 enum KeyboardLayers {
@@ -166,7 +169,31 @@ void draw_lock_indicators(led_t led_state) {
     qp_flush(display);
 }
 
+// Uses a deferred callback to redraw the bar that measures words per minute.
+// https://docs.qmk.fm/custom_quantum_functions#deferred-executor-callbacks
+uint32_t draw_wpm_bar(uint32_t trigger_time, void *cb_arg) {
+    const uint8_t max_bar_length = 83; // Max bar length in pixels
+    const float max_wpm = 100.0;       // The highest wpm value on the scale
+    float wpm = (float)get_current_wpm();
+
+    // WIP (42 / 100) * 83
+    uint8_t bar_length = (uint8_t)((wpm / max_wpm) * (float)max_bar_length);
+
+    // Draw black box over old bar to erase it
+    qp_rect(display, 44, 61, 44 + max_bar_length, 63, 0, 0, 0, true);
+
+    // Draw WPM bar
+    qp_rect(display, 44, 61, 44 + bar_length, 63, 0, 255, 255, true);
+
+    qp_flush(display);
+
+    // Call this function again after the same amount of time
+    return WPM_BAR_REDRAW_FREQ;
+}
+
 // Redraw the whole screen
+//
+// The deferred executor for draw_wpm_bar() must before you call this function.
 void draw_whole_screen(void) {
     // Static UI elements that do not change
     qp_drawimage(display, 0, 0, static_ui_img);
@@ -179,6 +206,10 @@ void draw_whole_screen(void) {
 
     // The caps lock, num lock, and scroll lock indicators.
     draw_lock_indicators(host_keyboard_led_state());
+
+    // The bar that measures words per minute
+    // Draw the WPM bar by making the deferred callback run early
+    extend_deferred_exec(draw_wpm_bar_token, 1);
 }
 
 // Uses a deferred callback to check if the display should go to sleep
@@ -205,7 +236,7 @@ void keyboard_post_init_kb(void) {
 
     // Display sleeping
     display_sleep_timer = timer_read();
-    defer_exec(DISPLAY_TIMEOUT_CHECK_FREQ, display_sleep_check, NULL);
+    display_sleep_check_token = defer_exec(DISPLAY_TIMEOUT_CHECK_FREQ, display_sleep_check, NULL);
 
     // Load images
     static_ui_img = qp_load_image_mem(gfx_static_ui);
@@ -224,6 +255,9 @@ void keyboard_post_init_kb(void) {
     seperator_on_off_img = qp_load_image_mem(gfx_seperator_on_off);
     seperator_off_on_img = qp_load_image_mem(gfx_seperator_off_on);
     seperator_on_on_img = qp_load_image_mem(gfx_seperator_on_on);
+
+    // Regularly update the WPM bar on the screen
+    draw_wpm_bar_token = defer_exec(WPM_BAR_REDRAW_FREQ, draw_wpm_bar, NULL);
 
     // Draw display for the first time
     draw_whole_screen();
@@ -270,6 +304,9 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
     // Reset OLED sleep timer
     display_sleep_timer = timer_read();
     qp_power(display, true);
+
+    // Redraw the WPM bar by making the deferred callback run early
+    extend_deferred_exec(draw_wpm_bar_token, 1);
     
     return true;
 }
