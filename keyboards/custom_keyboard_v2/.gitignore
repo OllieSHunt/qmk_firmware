@@ -1,0 +1,6 @@
+# Unignore .png files
+# 
+# The .qgf.c and .qgf.h files can't be edited or easily converted back to .png
+# files (as far as I can tell). This means that I need to keep the original .png files
+# alongside the qgf files if I ever want to be able to make changes to them.
+!*.png

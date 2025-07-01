@@ -5,6 +5,7 @@
 // - Add num lock, caps lock, and scroll lock indicators
 // - Words per minute counter: https://docs.qmk.fm/features/wpm
 // - Stenography: https://docs.qmk.fm/features/stenography
+// - Fine-tune max LED brightness
 // - Autocorrect? https://docs.qmk.fm/features/autocorrect
 // - Caps word? https://docs.qmk.fm/features/caps_word
 // - Key lock? https://docs.qmk.fm/features/key_lock
