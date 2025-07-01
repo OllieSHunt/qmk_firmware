@@ -1,6 +1,15 @@
 // Copyright 2023 QMK
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+// TODO:
+// - Double tap shift for caps lock
+// - Add num lock, caps lock, and scroll lock indicators
+// - Words per minute counter: https://docs.qmk.fm/features/wpm
+// - Stenography: https://docs.qmk.fm/features/stenography
+// - Autocorrect? https://docs.qmk.fm/features/autocorrect
+// - Caps word? https://docs.qmk.fm/features/caps_word
+// - Key lock? https://docs.qmk.fm/features/key_lock
+
 #include QMK_KEYBOARD_H
 
 // Include image files
@@ -109,8 +118,6 @@ void draw_layer_image(layer_state_t state) {
 
 // Redraw the whole screen
 void draw_whole_screen(void) {
-    // TODO: Add num lock, caps lock, and scroll lock indicators
-
     // Static UI elements that do not change
     qp_drawimage(display, 0, 0, static_ui);
     
