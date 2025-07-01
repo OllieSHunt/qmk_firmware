@@ -70,3 +70,6 @@
 #define RGB_MATRIX_DEFAULT_MODE RGB_MATRIX_MULTISPLASH
 #define RGB_MATRIX_SLEEP // Disable RGB on sleep
 #define RGB_TRIGGER_ON_KEYDOWN // The QMK docs say that this can cuase isues. So if I get any RGB issues, then try disabling this.
+
+// Config for the the TT(layer) keycode
+#define TAPPING_TOGGLE 2

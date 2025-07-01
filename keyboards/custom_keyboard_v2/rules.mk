@@ -15,7 +15,9 @@ QUANTUM_PAINTER_ENABLE = yes
 QUANTUM_PAINTER_DRIVERS += sh1106_i2c
 
 # Images
+SRC += assets/static_ui.qgf.c
 SRC += assets/mode_dvorak.qgf.c
 SRC += assets/mode_qwerty.qgf.c
 SRC += assets/mode_stenography.qgf.c
-SRC += assets/speed_indicator.qgf.c
+SRC += assets/checkbox_no.qgf.c
+SRC += assets/checkbox_yes.qgf.c
