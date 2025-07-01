@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 // TODO:
-// - Add num lock, caps lock, and scroll lock indicators
 // - Words per minute counter: https://docs.qmk.fm/features/wpm
 // - Stenography: https://docs.qmk.fm/features/stenography
 // - Fine-tune max LED brightness
@@ -19,6 +18,16 @@
 #include "assets/mode_stenography.qgf.h"
 #include "assets/checkbox_no.qgf.h"
 #include "assets/checkbox_yes.qgf.h"
+#include "assets/caps_off.qgf.h"
+#include "assets/caps_on.qgf.h"
+#include "assets/num_off.qgf.h"
+#include "assets/num_on.qgf.h"
+#include "assets/scroll_off.qgf.h"
+#include "assets/scroll_on.qgf.h"
+#include "assets/seperator_off_off.qgf.h"
+#include "assets/seperator_on_off.qgf.h"
+#include "assets/seperator_off_on.qgf.h"
+#include "assets/seperator_on_on.qgf.h"
 
 // The address of the SSD1306 128x65 OLED
 #define DISPLAY_I2C_ADDRESS 0x3C
@@ -31,12 +40,22 @@ static uint16_t display_sleep_timer; // I handle display sleep manually because 
 #define DISPLAY_TIMEOUT_CHECK_FREQ 1000
 
 // Handles to images
-static painter_image_handle_t static_ui;
-static painter_image_handle_t mode_dvorak;
-static painter_image_handle_t mode_qwerty;
-static painter_image_handle_t mode_stenography;
-static painter_image_handle_t checkbox_no;
-static painter_image_handle_t checkbox_yes;
+static painter_image_handle_t static_ui_img;
+static painter_image_handle_t mode_dvorak_img;
+static painter_image_handle_t mode_qwerty_img;
+static painter_image_handle_t mode_stenography_img;
+static painter_image_handle_t checkbox_no_img;
+static painter_image_handle_t checkbox_yes_img;
+static painter_image_handle_t caps_off_img;
+static painter_image_handle_t caps_on_img;
+static painter_image_handle_t num_off_img;
+static painter_image_handle_t num_on_img;
+static painter_image_handle_t scroll_off_img;
+static painter_image_handle_t scroll_on_img;
+static painter_image_handle_t seperator_off_off_img;
+static painter_image_handle_t seperator_on_off_img;
+static painter_image_handle_t seperator_off_on_img;
+static painter_image_handle_t seperator_on_on_img;
 
 // All layers on the keyboard
 enum KeyboardLayers {
@@ -93,13 +112,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 // Draws the default state indicator
 void draw_default_layer_image(layer_state_t state) {
-    const int DEFAULT_STATE_IMAGE_X = 0;
-    const int DEFAULT_STATE_IMAGE_Y = 0;
-    
     // Find what the default layer is
-    if (IS_LAYER_ON_STATE(state, DVK))      qp_drawimage(display, DEFAULT_STATE_IMAGE_X, DEFAULT_STATE_IMAGE_Y, mode_dvorak);
-    else if (IS_LAYER_ON_STATE(state, QWT)) qp_drawimage(display, DEFAULT_STATE_IMAGE_X, DEFAULT_STATE_IMAGE_Y, mode_qwerty);
-    else                                    qp_drawimage(display, DEFAULT_STATE_IMAGE_X, DEFAULT_STATE_IMAGE_Y, mode_stenography);
+    if (IS_LAYER_ON_STATE(state, DVK))      qp_drawimage(display, 0, 0, mode_dvorak_img);
+    else if (IS_LAYER_ON_STATE(state, QWT)) qp_drawimage(display, 0, 0, mode_qwerty_img);
+    else                                    qp_drawimage(display, 0, 0, mode_stenography_img);
 
     qp_flush(display);
 }
@@ -108,24 +124,61 @@ void draw_default_layer_image(layer_state_t state) {
 // the default layer indicator which shows what the current default layer is).
 void draw_layer_image(layer_state_t state) {
     // Symbol layer
-    if (IS_LAYER_ON_STATE(state, SYM)) qp_drawimage(display, 30, 29, checkbox_yes);
-    else                               qp_drawimage(display, 30, 29, checkbox_no);
+    if (IS_LAYER_ON_STATE(state, SYM)) qp_drawimage(display, 30, 29, checkbox_yes_img);
+    else                               qp_drawimage(display, 30, 29, checkbox_no_img);
 
     // Control layer
-    if (IS_LAYER_ON_STATE(state, CTL)) qp_drawimage(display, 30, 40, checkbox_yes);
-    else                               qp_drawimage(display, 30, 40, checkbox_no);
+    if (IS_LAYER_ON_STATE(state, CTL)) qp_drawimage(display, 30, 40, checkbox_yes_img);
+    else                               qp_drawimage(display, 30, 40, checkbox_no_img);
+
+    qp_flush(display);
+}
+
+// Draws the caps lock, num lock, and scroll lock indicators.
+// 
+// This function uses the QMK's led indicator feature to get information about
+// the state of the lock keys.
+void draw_lock_indicators(led_t led_state) {
+    // Caps lock indicator
+    if (led_state.caps_lock) qp_drawimage(display, 0, 52, caps_on_img);
+    else                     qp_drawimage(display, 0, 52, caps_off_img);
+
+    // Draw the correct separator between the caps lock and num lock indicators
+    if      (led_state.caps_lock && led_state.num_lock)  qp_drawimage(display, 13, 52, seperator_on_on_img);
+    else if (led_state.caps_lock && !led_state.num_lock) qp_drawimage(display, 13, 52, seperator_on_off_img);
+    else if (!led_state.caps_lock && led_state.num_lock) qp_drawimage(display, 13, 52, seperator_off_on_img);
+    else                                                 qp_drawimage(display, 13, 52, seperator_off_off_img);
+
+    // Num lock indicator
+    if (led_state.num_lock) qp_drawimage(display, 16, 52, num_on_img);
+    else                    qp_drawimage(display, 16, 52, num_off_img);
+
+    // Draw the correct separator between the num lock and scroll lock indicators
+    if      (led_state.num_lock && led_state.scroll_lock)  qp_drawimage(display, 26, 52, seperator_on_on_img);
+    else if (led_state.num_lock && !led_state.scroll_lock) qp_drawimage(display, 26, 52, seperator_on_off_img);
+    else if (!led_state.num_lock && led_state.scroll_lock) qp_drawimage(display, 26, 52, seperator_off_on_img);
+    else                                                   qp_drawimage(display, 26, 52, seperator_off_off_img);
+
+    // Scroll lock indicator
+    if (led_state.scroll_lock) qp_drawimage(display, 29, 52, scroll_on_img);
+    else                       qp_drawimage(display, 29, 52, scroll_off_img);
+
+    qp_flush(display);
 }
 
 // Redraw the whole screen
 void draw_whole_screen(void) {
     // Static UI elements that do not change
-    qp_drawimage(display, 0, 0, static_ui);
+    qp_drawimage(display, 0, 0, static_ui_img);
     
     // The default layer image
     draw_default_layer_image(default_layer_state);
 
     // The layer indicators
     draw_layer_image(default_layer_state);
+
+    // The caps lock, num lock, and scroll lock indicators.
+    draw_lock_indicators(host_keyboard_led_state());
 }
 
 // Uses a deferred callback to check if the display should go to sleep
@@ -155,12 +208,22 @@ void keyboard_post_init_kb(void) {
     defer_exec(DISPLAY_TIMEOUT_CHECK_FREQ, display_sleep_check, NULL);
 
     // Load images
-    static_ui = qp_load_image_mem(gfx_static_ui);
-    mode_dvorak = qp_load_image_mem(gfx_mode_dvorak);
-    mode_qwerty = qp_load_image_mem(gfx_mode_qwerty);
-    mode_stenography = qp_load_image_mem(gfx_mode_stenography);
-    checkbox_no = qp_load_image_mem(gfx_checkbox_no);
-    checkbox_yes = qp_load_image_mem(gfx_checkbox_yes);
+    static_ui_img = qp_load_image_mem(gfx_static_ui);
+    mode_dvorak_img = qp_load_image_mem(gfx_mode_dvorak);
+    mode_qwerty_img = qp_load_image_mem(gfx_mode_qwerty);
+    mode_stenography_img = qp_load_image_mem(gfx_mode_stenography);
+    checkbox_no_img = qp_load_image_mem(gfx_checkbox_no);
+    checkbox_yes_img = qp_load_image_mem(gfx_checkbox_yes);
+    caps_off_img = qp_load_image_mem(gfx_caps_off);
+    caps_on_img = qp_load_image_mem(gfx_caps_on);
+    num_off_img = qp_load_image_mem(gfx_num_off);
+    num_on_img = qp_load_image_mem(gfx_num_on);
+    scroll_off_img = qp_load_image_mem(gfx_scroll_off);
+    scroll_on_img = qp_load_image_mem(gfx_scroll_on);
+    seperator_off_off_img = qp_load_image_mem(gfx_seperator_off_off);
+    seperator_on_off_img = qp_load_image_mem(gfx_seperator_on_off);
+    seperator_off_on_img = qp_load_image_mem(gfx_seperator_off_on);
+    seperator_on_on_img = qp_load_image_mem(gfx_seperator_on_on);
 
     // Draw display for the first time
     draw_whole_screen();
@@ -191,6 +254,15 @@ layer_state_t default_layer_state_set_kb(layer_state_t state) {
     draw_default_layer_image(state);
 
     return state;
+}
+
+// Called when one of the following indicator LEDs is changed:
+// Num Lock, Caps Lock, Scroll Lock, Compose, Kana
+bool led_update_kb(led_t led_state) {
+    // Draws the caps lock, num lock, and scroll lock indicators.
+    draw_lock_indicators(led_state);
+
+    return true;
 }
 
 // Called on key press

@@ -73,3 +73,6 @@
 
 // Config for the the TT(layer) keycode
 #define TAPPING_TOGGLE 2
+
+// Quantum painter config
+#define QUANTUM_PAINTER_NUM_IMAGES 16
