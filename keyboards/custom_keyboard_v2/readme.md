@@ -1,9 +1,9 @@
 # custom_keyboard_v2
 
-IMPORTANT: See [https://github.com/OllieSHunt/custom-keyboard-v2] for information about this project.
+IMPORTANT: See https://github.com/OllieSHunt/custom-keyboard-v2 for information about this project.
 
 * Keyboard Maintainer: [Ollie Hunt](https://github.com/OllieSHunt)
-* Hardware Supported: [https://github.com/OllieSHunt/custom-keyboard-v2]
+* Hardware Supported: https://github.com/OllieSHunt/custom-keyboard-v2
 
 Make example for this keyboard (after setting up your build environment):
 

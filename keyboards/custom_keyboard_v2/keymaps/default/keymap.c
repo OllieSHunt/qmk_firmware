@@ -2,9 +2,12 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 // TODO:
-// - Make LEDs configurable via keycodes
+// - Find a way to toggle RGB_MATRIX_SOLID_REACTIVE_GRADIENT_MODE at runtime
+// - Look into "RGB Matrix Effect Typing Heatmap"
 // - Stenography: https://docs.qmk.fm/features/stenography
+//   - Update the features list in the hardware repository to include this feature
 // - Autocorrect? https://docs.qmk.fm/features/autocorrect
+// - Find something interesting to put in the large blank spot on the OLED
 
 #include QMK_KEYBOARD_H
 
@@ -96,11 +99,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
     [CTL] = LAYOUT_ortho_5x10(
-        KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_NO,   KC_NO,   KC_NO,   EE_CLR,  QK_BOOT,
-        KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,  
-        KC_F11,  KC_F12,  KC_INS,  KC_HOME, KC_PGUP, KC_RALT, PDF(QWT),PDF(DVK),KC_NO,   KC_NO,  
+        KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   RM_HUEU, RM_SATU, RM_VALU, EE_CLR,  QK_BOOT,
+        KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  RM_HUED, RM_SATD, RM_VALD, RM_PREV, RM_NEXT,  
+        KC_F11,  KC_F12,  KC_INS,  KC_HOME, KC_PGUP, KC_RALT, PDF(QWT),PDF(DVK),KC_NO,   RM_TOGG,  
         KC_SCRL, KC_PAUS, KC_NO,   KC_END,  KC_PGDN, KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,  
-        KC_NO,   KC_NO,   _______, TT(CTL), _______, _______, _______, _______, KC_NO,   KC_NO
+        KC_NO,   KC_NO,   _______, TT(CTL), _______, _______, _______, _______, RM_SPDD, RM_SPDU
     ),
 
     // NEW LAYER TEMPLATE
