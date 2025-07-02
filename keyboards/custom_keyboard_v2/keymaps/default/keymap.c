@@ -2,11 +2,9 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 // TODO:
+// - Show LED speed setting on the OLED
 // - Find a way to toggle RGB_MATRIX_SOLID_REACTIVE_GRADIENT_MODE at runtime
 // - Look into "RGB Matrix Effect Typing Heatmap"
-// - RGB info on display
-//   - HSL display
-//   - RGB mode display
 // - Stenography: https://docs.qmk.fm/features/stenography
 //   - Update the features list in the hardware repository to include this feature
 // - Autocorrect? https://docs.qmk.fm/features/autocorrect
@@ -185,10 +183,10 @@ uint32_t draw_wpm_bar(uint32_t trigger_time, void *cb_arg) {
     uint8_t bar_length = (uint8_t)((wpm / max_wpm) * (float)max_bar_length);
 
     // Draw black box over old bar to erase it
-    qp_rect(display, 44, 61, 44 + max_bar_length, 63, 0, 0, 0, true);
+    qp_rect(display, 44, 61, 44 + max_bar_length - 1, 63, 0, 0, 0, true);
 
     // Draw WPM bar
-    qp_rect(display, 44, 61, 44 + bar_length, 63, 0, 255, 255, true);
+    qp_rect(display, 44, 61, 44 + bar_length - 1, 63, 0, 255, 255, true);
 
     qp_flush(display);
 
@@ -205,16 +203,38 @@ void draw_hsl_bars(void) {
     uint8_t l_bar_length = (uint8_t)(((float)rgb_matrix_get_val() / 255.0) * (float)max_bar_length);
 
     // Draw black box over old bars to erase them
-    qp_rect(display, 49, 13, 49 + max_bar_length, 15, 0, 0, 0, true);
-    qp_rect(display, 49, 28, 49 + max_bar_length, 30, 0, 0, 0, true);
-    qp_rect(display, 49, 42, 49 + max_bar_length, 44, 0, 0, 0, true);
+    qp_rect(display, 49, 13, 49 + max_bar_length - 1, 15, 0, 0, 0, true);
+    qp_rect(display, 49, 28, 49 + max_bar_length - 1, 30, 0, 0, 0, true);
+    qp_rect(display, 49, 42, 49 + max_bar_length - 1, 44, 0, 0, 0, true);
 
     // Draw bars
-    qp_rect(display, 49, 13, 49 + h_bar_length, 15, 0, 255, 255, true);
-    qp_rect(display, 49, 28, 49 + s_bar_length, 30, 0, 255, 255, true);
-    qp_rect(display, 49, 42, 49 + l_bar_length, 44, 0, 255, 255, true);
+    qp_rect(display, 49, 13, 49 + h_bar_length - 1, 15, 0, 255, 255, true);
+    qp_rect(display, 49, 28, 49 + s_bar_length - 1, 30, 0, 255, 255, true);
+    qp_rect(display, 49, 42, 49 + l_bar_length - 1, 44, 0, 255, 255, true);
 
     qp_flush(display);
+}
+
+// Draw binary number as an indicator for what RGB matrix effect is active.
+void draw_rgb_mode_indicator(void) {
+    const uint8_t x = 95;
+    const uint8_t y = 1;
+    const uint8_t bit_size = 3; // Size of each square in pixels
+    const uint8_t bit_quantity = 6;
+    const uint8_t x_end = x + (bit_size * bit_quantity);
+    const uint8_t y_end = y + bit_size;
+    uint8_t mode = rgb_matrix_get_mode();
+
+    // Draw black rectangle to erase previous render
+    qp_rect(display, x, y, x_end - 1, y_end - 1, 0, 0, 0, true);
+
+    // Draw a square for each bit
+    for (uint8_t i=0; i<bit_quantity; i++) {
+        if ((mode & ( 1 << i )) >> i) {
+            uint8_t bit_x = x_end - (bit_size * i);
+            qp_rect(display, bit_x - bit_size, y, bit_x - 1, y_end - 1, 0, 255, 255, true);
+        }
+    }
 }
 
 // Redraw the whole screen
@@ -235,6 +255,9 @@ void draw_whole_screen(void) {
 
     // The bars that show hue saturation and lightness.
     draw_hsl_bars();
+
+    // Binary number as an indicator for what RGB matrix effect is active.
+    draw_rgb_mode_indicator();
 
     // The bar that measures words per minute
     // Draw the WPM bar by making the deferred callback run early
@@ -339,6 +362,7 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
 
     // TEMP: Move somewhere else so it is not run every keystroke
     draw_hsl_bars();
+    draw_rgb_mode_indicator();
     
     return true;
 }
