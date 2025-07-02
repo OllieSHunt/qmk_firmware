@@ -64,9 +64,9 @@
 
 // LED config
 #define RGB_MATRIX_DEFAULT_ON true
-#define RGB_MATRIX_MAXIMUM_BRIGHTNESS 150
 #define RGB_MATRIX_DEFAULT_HUE 132
 #define RGB_MATRIX_DEFAULT_SAT 213
+#define RGB_MATRIX_DEFAULT_VAL 150
 #define RGB_MATRIX_DEFAULT_MODE RGB_MATRIX_RIVERFLOW
 #define RGB_MATRIX_SLEEP // Disable RGB on sleep
 #define RGB_TRIGGER_ON_KEYDOWN // The QMK docs say that this can cuase isues. So if I get any RGB issues, then try disabling this.

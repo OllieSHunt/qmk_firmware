@@ -4,6 +4,9 @@
 // TODO:
 // - Find a way to toggle RGB_MATRIX_SOLID_REACTIVE_GRADIENT_MODE at runtime
 // - Look into "RGB Matrix Effect Typing Heatmap"
+// - RGB info on display
+//   - HSL display
+//   - RGB mode display
 // - Stenography: https://docs.qmk.fm/features/stenography
 //   - Update the features list in the hardware repository to include this feature
 // - Autocorrect? https://docs.qmk.fm/features/autocorrect
@@ -179,7 +182,6 @@ uint32_t draw_wpm_bar(uint32_t trigger_time, void *cb_arg) {
     const float max_wpm = 100.0;       // The highest wpm value on the scale
     float wpm = (float)get_current_wpm();
 
-    // WIP (42 / 100) * 83
     uint8_t bar_length = (uint8_t)((wpm / max_wpm) * (float)max_bar_length);
 
     // Draw black box over old bar to erase it
@@ -192,6 +194,27 @@ uint32_t draw_wpm_bar(uint32_t trigger_time, void *cb_arg) {
 
     // Call this function again after the same amount of time
     return WPM_BAR_REDRAW_FREQ;
+}
+
+// Draws the bars that show hue saturation and lightness.
+void draw_hsl_bars(void) {
+    const uint8_t max_bar_length = 72; // Max bar length in pixels
+
+    uint8_t h_bar_length = (uint8_t)(((float)rgb_matrix_get_hue() / 255.0) * (float)max_bar_length);
+    uint8_t s_bar_length = (uint8_t)(((float)rgb_matrix_get_sat() / 255.0) * (float)max_bar_length);
+    uint8_t l_bar_length = (uint8_t)(((float)rgb_matrix_get_val() / 255.0) * (float)max_bar_length);
+
+    // Draw black box over old bars to erase them
+    qp_rect(display, 49, 13, 49 + max_bar_length, 15, 0, 0, 0, true);
+    qp_rect(display, 49, 28, 49 + max_bar_length, 30, 0, 0, 0, true);
+    qp_rect(display, 49, 42, 49 + max_bar_length, 44, 0, 0, 0, true);
+
+    // Draw bars
+    qp_rect(display, 49, 13, 49 + h_bar_length, 15, 0, 255, 255, true);
+    qp_rect(display, 49, 28, 49 + s_bar_length, 30, 0, 255, 255, true);
+    qp_rect(display, 49, 42, 49 + l_bar_length, 44, 0, 255, 255, true);
+
+    qp_flush(display);
 }
 
 // Redraw the whole screen
@@ -209,6 +232,9 @@ void draw_whole_screen(void) {
 
     // The caps lock, num lock, and scroll lock indicators.
     draw_lock_indicators(host_keyboard_led_state());
+
+    // The bars that show hue saturation and lightness.
+    draw_hsl_bars();
 
     // The bar that measures words per minute
     // Draw the WPM bar by making the deferred callback run early
@@ -310,6 +336,9 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
 
     // Redraw the WPM bar by making the deferred callback run early
     extend_deferred_exec(draw_wpm_bar_token, 1);
+
+    // TEMP: Move somewhere else so it is not run every keystroke
+    draw_hsl_bars();
     
     return true;
 }
