@@ -5,6 +5,7 @@
 // - Show LED speed setting on the OLED
 // - Find a way to toggle RGB_MATRIX_SOLID_REACTIVE_GRADIENT_MODE at runtime
 // - Look into "RGB Matrix Effect Typing Heatmap"
+// - Change some specific LEDs when on different layers
 // - Stenography: https://docs.qmk.fm/features/stenography
 //   - Update the features list in the hardware repository to include this feature
 // - Autocorrect? https://docs.qmk.fm/features/autocorrect
@@ -325,6 +326,18 @@ void suspend_power_down_kb(void) {
 void suspend_wakeup_init_kb(void) {
     // Re-enable the display
     qp_power(display, true);
+}
+
+// This will run when entering the keyboard is powered off
+bool shutdown_kb(bool jump_to_bootloader) {
+    // Clear the display and turn off all LEDs
+    qp_power(display, false);
+    rgb_matrix_set_color_all(RGB_OFF);
+
+    // Force update the LEDs
+    ws2812_flush();
+
+    return true;
 }
 
 // Called on layer change
