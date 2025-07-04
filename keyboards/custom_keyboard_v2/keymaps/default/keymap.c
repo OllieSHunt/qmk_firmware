@@ -3,8 +3,7 @@
 
 // TODO:
 // - Make the RGB_MATRIX_SOLID_REACTIVE_GRADIENT_MODE togglable at runtime using custom code
-// - Show LED speed setting on the OLED
-// - Change some specific LEDs when on different layers
+// - Change some specific LEDs when on different layers or states (e.g. caps lock)
 // - Stenography: https://docs.qmk.fm/features/stenography
 //   - Update the features list in the hardware repository to include this feature
 // - Autocorrect? https://docs.qmk.fm/features/autocorrect
@@ -193,30 +192,34 @@ uint32_t draw_wpm_bar(uint32_t trigger_time, void *cb_arg) {
     return WPM_BAR_REDRAW_FREQ;
 }
 
-// Draws the bars that show hue saturation and lightness.
+// Draws the bars that show hue saturation, lightness, and speed.
 void draw_hsl_bars(void) {
-    const uint8_t max_bar_length = 72; // Max bar length in pixels
+    const uint8_t horizontal_bar_length = 64; // Max length of horizontal bars in pixels
+    const uint8_t vertical_bar_length = 39;   // Max length of vertical bars in pixels
 
-    uint8_t h_bar_length = (uint8_t)(((float)rgb_matrix_get_hue() / 255.0) * (float)max_bar_length);
-    uint8_t s_bar_length = (uint8_t)(((float)rgb_matrix_get_sat() / 255.0) * (float)max_bar_length);
-    uint8_t l_bar_length = (uint8_t)(((float)rgb_matrix_get_val() / 255.0) * (float)max_bar_length);
+    uint8_t h_bar_length = (uint8_t)(((float)rgb_matrix_get_hue() / 255.0) * (float)horizontal_bar_length);
+    uint8_t s_bar_length = (uint8_t)(((float)rgb_matrix_get_sat() / 255.0) * (float)horizontal_bar_length);
+    uint8_t l_bar_length = (uint8_t)(((float)rgb_matrix_get_val() / 255.0) * (float)horizontal_bar_length);
+    uint8_t speed_bar_length = (uint8_t)(((float)rgb_matrix_get_speed() / 255.0) * (float)vertical_bar_length);
 
     // Draw black box over old bars to erase them
-    qp_rect(display, 49, 13, 49 + max_bar_length - 1, 15, 0, 0, 0, true);
-    qp_rect(display, 49, 28, 49 + max_bar_length - 1, 30, 0, 0, 0, true);
-    qp_rect(display, 49, 42, 49 + max_bar_length - 1, 44, 0, 0, 0, true);
+    qp_rect(display, 49, 13, 49 + horizontal_bar_length - 1, 15, 0, 0, 0, true);
+    qp_rect(display, 49, 28, 49 + horizontal_bar_length - 1, 30, 0, 0, 0, true);
+    qp_rect(display, 49, 42, 49 + horizontal_bar_length - 1, 44, 0, 0, 0, true);
+    qp_rect(display, 119, 6 + vertical_bar_length, 121, 6, 0, 0, 0, true);
 
     // Draw bars
     qp_rect(display, 49, 13, 49 + h_bar_length - 1, 15, 0, 255, 255, true);
     qp_rect(display, 49, 28, 49 + s_bar_length - 1, 30, 0, 255, 255, true);
     qp_rect(display, 49, 42, 49 + l_bar_length - 1, 44, 0, 255, 255, true);
+    qp_rect(display, 119, 6 + vertical_bar_length, 121, (6 + vertical_bar_length) - speed_bar_length - 1, 0, 255, 255, true);
 
     qp_flush(display);
 }
 
 // Draw binary number as an indicator for what RGB matrix effect is active.
 void draw_rgb_mode_indicator(void) {
-    const uint8_t x = 95;
+    const uint8_t x = 94;
     const uint8_t y = 1;
     const uint8_t bit_size = 3; // Size of each square in pixels
     const uint8_t bit_quantity = 6;

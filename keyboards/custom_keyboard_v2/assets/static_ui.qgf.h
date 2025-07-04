@@ -11,4 +11,4 @@
 #include <qp.h>
 
 extern const uint32_t gfx_static_ui_length;
-extern const uint8_t  gfx_static_ui[753];
+extern const uint8_t  gfx_static_ui[793];
