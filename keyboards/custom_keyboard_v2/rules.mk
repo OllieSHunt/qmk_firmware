@@ -1,3 +1,7 @@
+# Misc features
+WPM_ENABLE = yes
+LAYER_LOCK_ENABLE = yes
+
 # Bootloader selection
 BOOTLOADER = rp2040
 BOARD = GENERIC_RP_RP2040
@@ -13,9 +17,6 @@ QUANTUM_PAINTER_ENABLE = yes
 
 # This is technicaly the wrong driver, but it seems to work (I am using an SSD1306 display not SH1106)
 QUANTUM_PAINTER_DRIVERS += sh1106_i2c
-
-# Enable words per minute feature
-WPM_ENABLE = yes
 
 # Images
 SRC += assets/static_ui.qgf.c

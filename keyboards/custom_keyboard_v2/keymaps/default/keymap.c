@@ -4,12 +4,11 @@
 // TODO:
 // - Show LED speed setting on the OLED
 // - Find a way to toggle RGB_MATRIX_SOLID_REACTIVE_GRADIENT_MODE at runtime
-// - Look into "RGB Matrix Effect Typing Heatmap"
+// - Look into "RGB Matrix Effect Typing Heatmap" on the wiki
 // - Change some specific LEDs when on different layers
 // - Stenography: https://docs.qmk.fm/features/stenography
 //   - Update the features list in the hardware repository to include this feature
 // - Autocorrect? https://docs.qmk.fm/features/autocorrect
-// - Find something interesting to put in the large blank spot on the OLED
 
 #include QMK_KEYBOARD_H
 
@@ -81,7 +80,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_QUOT, KC_COMM, KC_DOT,  KC_P,    KC_Y,    KC_F,    KC_G,    KC_C,    KC_R,    KC_L,
         KC_A,    KC_O,    KC_E,    KC_U,    KC_I,    KC_D,    KC_H,    KC_T,    KC_N,    KC_S,
         KC_SCLN, KC_Q,    KC_J,    KC_K,    KC_X,    KC_B,    KC_M,    KC_W,    KC_V,    KC_Z,
-        KC_NO,   KC_NO,   KC_LALT, KC_SPC,  KC_LCMD, KC_LCTL, TT(SYM), SFT_T(KC_CAPS),KC_NO,   KC_NO
+        KC_NO,   KC_NO,   KC_LALT, KC_SPC,  KC_LCMD, KC_LCTL, MO(SYM), SFT_T(KC_CAPS),KC_NO,   KC_NO
     ),
 
     [QWT] = LAYOUT_ortho_5x10(
@@ -97,7 +96,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_BSLS, KC_GRV,  KC_LBRC, KC_RBRC, KC_ESC,  KC_NUM,  KC_P7,   KC_P8,   KC_P9,   KC_PMNS,
         KC_NUBS, KC_SLSH, KC_DEL,  KC_BSPC, KC_ENT,  KC_P0,   KC_P4,   KC_P5,   KC_P6,   KC_PPLS,
         KC_NO,   KC_MINS, KC_EQL,  KC_TAB,  KC_NO,   KC_PDOT, KC_P1,   KC_P2,   KC_P3,   KC_PENT,
-        KC_NO,   KC_NO,   _______, TT(CTL), _______, _______, _______, _______, KC_NO,   KC_NO
+        KC_NO,   KC_NO,   _______, QK_LLCK, _______, _______, MO(CTL), _______, KC_NO,   KC_NO
     ),
 
     [CTL] = LAYOUT_ortho_5x10(
@@ -105,7 +104,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  RM_HUED, RM_SATD, RM_VALD, RM_PREV, RM_NEXT,  
         KC_F11,  KC_F12,  KC_INS,  KC_HOME, KC_PGUP, KC_RALT, PDF(QWT),PDF(DVK),KC_NO,   RM_TOGG,  
         KC_SCRL, KC_PAUS, KC_NO,   KC_END,  KC_PGDN, KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,  
-        KC_NO,   KC_NO,   _______, TT(CTL), _______, _______, _______, _______, RM_SPDD, RM_SPDU
+        KC_NO,   KC_NO,   _______, QK_LLCK, _______, _______, KC_NO,   _______, RM_SPDD, RM_SPDU
     ),
 
     // NEW LAYER TEMPLATE
