@@ -73,6 +73,16 @@
 #define RGB_MATRIX_SLEEP // Disable RGB on sleep
 #define RGB_TRIGGER_ON_KEYDOWN // The QMK docs say that this can cuase isues. So if I get any RGB issues, then try disabling this.
 
+// Heatmap LED effect config
+#define RGB_MATRIX_TYPING_HEATMAP_DECREASE_DELAY_MS 64
+#define RGB_MATRIX_TYPING_HEATMAP_SPREAD 32
+#define RGB_MATRIX_TYPING_HEATMAP_AREA_LIMIT 8
+// #define RGB_MATRIX_TYPING_HEATMAP_SLIM
+#define RGB_MATRIX_TYPING_HEATMAP_INCREASE_STEP 64
+
+// Toggle whether solid reactive effects change the colour over time
+// #define RGB_MATRIX_SOLID_REACTIVE_GRADIENT_MODE
+
 // Quantum painter config
 #define QUANTUM_PAINTER_NUM_IMAGES 16
 
