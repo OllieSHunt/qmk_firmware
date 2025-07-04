@@ -2,9 +2,8 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 // TODO:
+// - Make the RGB_MATRIX_SOLID_REACTIVE_GRADIENT_MODE togglable at runtime using custom code
 // - Show LED speed setting on the OLED
-// - Find a way to toggle RGB_MATRIX_SOLID_REACTIVE_GRADIENT_MODE at runtime
-// - Look into "RGB Matrix Effect Typing Heatmap" on the wiki
 // - Change some specific LEDs when on different layers
 // - Stenography: https://docs.qmk.fm/features/stenography
 //   - Update the features list in the hardware repository to include this feature
@@ -103,8 +102,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   RM_HUEU, RM_SATU, RM_VALU, EE_CLR,  QK_BOOT,
         KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  RM_HUED, RM_SATD, RM_VALD, RM_PREV, RM_NEXT,  
         KC_F11,  KC_F12,  KC_INS,  KC_HOME, KC_PGUP, KC_RALT, PDF(QWT),PDF(DVK),KC_NO,   RM_TOGG,  
-        KC_SCRL, KC_PAUS, KC_NO,   KC_END,  KC_PGDN, KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,  
-        KC_NO,   KC_NO,   _______, QK_LLCK, _______, _______, KC_NO,   _______, RM_SPDD, RM_SPDU
+        KC_SCRL, KC_PAUS, KC_NO,   KC_END,  KC_PGDN, KC_NO,   KC_NO,   KC_NO,   RM_SPDD, RM_SPDU,
+        KC_NO,   KC_NO,   _______, QK_LLCK, _______, _______, KC_NO,   _______, KC_NO,   KC_NO 
     ),
 
     // NEW LAYER TEMPLATE

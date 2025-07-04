@@ -7,6 +7,7 @@
 #define WS2812_DI_PIN GP15
 
 // Enable LED matrix paterns
+// NOTE TO SELF: Remember to update this list every now an then in case new animations get added
 #define ENABLE_RGB_MATRIX_NONE
 #define ENABLE_RGB_MATRIX_SOLID_COLOR               // 1.  Static single hue, no speed support
 #define ENABLE_RGB_MATRIX_ALPHAS_MODS               // 2.  Static dual hue, speed is hue for secondary hue
@@ -59,8 +60,6 @@
 #define ENABLE_RGB_MATRIX_STARLIGHT_DUAL_SAT        // 49. LEDs turn on and off at random at varying brightness, modifies user set saturation by +- 30
 #define ENABLE_RGB_MATRIX_RIVERFLOW                 // 50. Modification to breathing animation, offset's animation depending on key location to simulate a river flowing
 #define ENABLE_RB_MATRIX_EFFECT_MAX
-
-// #define RGB_MATRIX_SOLID_REACTIVE_GRADIENT_MODE
 
 // LED config
 #define RGB_MATRIX_DEFAULT_ON true
