@@ -203,16 +203,19 @@ void draw_hsl_bars(void) {
     uint8_t speed_bar_length = (uint8_t)(((float)rgb_matrix_get_speed() / 255.0) * (float)vertical_bar_length);
 
     // Draw black box over old bars to erase them
-    qp_rect(display, 49, 13, 49 + horizontal_bar_length - 1, 15, 0, 0, 0, true);
-    qp_rect(display, 49, 28, 49 + horizontal_bar_length - 1, 30, 0, 0, 0, true);
-    qp_rect(display, 49, 42, 49 + horizontal_bar_length - 1, 44, 0, 0, 0, true);
-    qp_rect(display, 119, 6 + vertical_bar_length, 121, 6, 0, 0, 0, true);
+    qp_rect(display, 49, 13, 49 + horizontal_bar_length - 1, 15, 0, 0, 0, true); // HUE
+    qp_rect(display, 49, 28, 49 + horizontal_bar_length - 1, 30, 0, 0, 0, true); // SAT
+    qp_rect(display, 49, 42, 49 + horizontal_bar_length - 1, 44, 0, 0, 0, true); // LIT
+    qp_rect(display, 119, 6 + vertical_bar_length - 1, 121, 6, 0, 0, 0, true); // SPEED
 
-    // Draw bars
-    qp_rect(display, 49, 13, 49 + h_bar_length - 1, 15, 0, 255, 255, true);
-    qp_rect(display, 49, 28, 49 + s_bar_length - 1, 30, 0, 255, 255, true);
-    qp_rect(display, 49, 42, 49 + l_bar_length - 1, 44, 0, 255, 255, true);
-    qp_rect(display, 119, 6 + vertical_bar_length, 121, (6 + vertical_bar_length) - speed_bar_length - 1, 0, 255, 255, true);
+    // Only draw if RGB lighting is enabled
+    if (rgb_matrix_is_enabled()) {
+        // Draw bars
+        qp_rect(display, 49, 13, 49 + h_bar_length - 1, 15, 0, 255, 255, true); // HUE
+        qp_rect(display, 49, 28, 49 + s_bar_length - 1, 30, 0, 255, 255, true); // SAT
+        qp_rect(display, 49, 42, 49 + l_bar_length - 1, 44, 0, 255, 255, true); // LIT
+        qp_rect(display, 119, 6 + vertical_bar_length - 1, 121, (6 + vertical_bar_length) - speed_bar_length - 1, 0, 255, 255, true); // SPEED
+    }
 
     qp_flush(display);
 }
@@ -230,11 +233,14 @@ void draw_rgb_mode_indicator(void) {
     // Draw black rectangle to erase previous render
     qp_rect(display, x, y, x_end - 1, y_end - 1, 0, 0, 0, true);
 
-    // Draw a square for each bit
-    for (uint8_t i=0; i<bit_quantity; i++) {
-        if ((mode & ( 1 << i )) >> i) {
-            uint8_t bit_x = x_end - (bit_size * i);
-            qp_rect(display, bit_x - bit_size, y, bit_x - 1, y_end - 1, 0, 255, 255, true);
+    // Only draw if RGB lighting is enabled
+    if (rgb_matrix_is_enabled()) {
+        // Draw a square for each bit
+        for (uint8_t i=0; i<bit_quantity; i++) {
+            if ((mode & ( 1 << i )) >> i) {
+                uint8_t bit_x = x_end - (bit_size * i);
+                qp_rect(display, bit_x - bit_size, y, bit_x - 1, y_end - 1, 0, 255, 255, true);
+            }
         }
     }
 }
