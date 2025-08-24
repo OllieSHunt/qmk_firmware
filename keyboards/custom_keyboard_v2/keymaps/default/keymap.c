@@ -98,11 +98,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
     [CTL] = LAYOUT_ortho_5x10(
-        KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   RM_HUEU, RM_SATU, RM_VALU, EE_CLR,  QK_BOOT,
-        KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  RM_HUED, RM_SATD, RM_VALD, RM_PREV, RM_NEXT,  
-        KC_F11,  KC_F12,  KC_INS,  KC_HOME, KC_PGUP, KC_RALT, PDF(QWT),PDF(DVK),KC_NO,   RM_TOGG,  
-        KC_SCRL, KC_PAUS, KC_NO,   KC_END,  KC_PGDN, KC_NO,   KC_NO,   KC_NO,   RM_SPDD, RM_SPDU,
-        KC_NO,   KC_NO,   _______, QK_LLCK, _______, _______, KC_NO,   _______, KC_NO,   KC_NO 
+        KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   RM_HUEU, RM_SATU, RM_VALU, RM_SPDU, RM_NEXT,
+        KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  RM_HUED, RM_SATD, RM_VALD, RM_SPDD, RM_PREV,
+        KC_F11,  KC_F12,  KC_INS,  KC_HOME, KC_PGUP, KC_RALT, PDF(QWT),PDF(DVK),KC_NO,   RM_TOGG,
+        KC_SCRL, KC_PAUS, KC_NO,   KC_END,  KC_PGDN, KC_NO,   KC_NO,   KC_NO,   EE_CLR,  QK_BOOT,
+        KC_NO,   KC_NO,   _______, QK_LLCK, _______, _______, KC_NO,   _______, KC_NO,   KC_NO
     ),
 
     // NEW LAYER TEMPLATE
@@ -140,7 +140,7 @@ void draw_layer_image(layer_state_t state) {
 }
 
 // Draws the caps lock, num lock, and scroll lock indicators.
-// 
+//
 // This function uses the QMK's led indicator feature to get information about
 // the state of the lock keys.
 void draw_lock_indicators(led_t led_state) {
@@ -245,7 +245,7 @@ void draw_rgb_mode_indicator(void) {
 void draw_whole_screen(void) {
     // Static UI elements that do not change
     qp_drawimage(display, 0, 0, static_ui_img);
-    
+
     // The default layer image
     draw_default_layer_image(default_layer_state);
 
@@ -377,6 +377,6 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
     // TEMP: Move somewhere else so it is not run every keystroke
     draw_hsl_bars();
     draw_rgb_mode_indicator();
-    
+
     return true;
 }
