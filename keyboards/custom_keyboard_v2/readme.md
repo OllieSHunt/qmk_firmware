@@ -32,3 +32,7 @@ Run from anywhere:
 Working with images - run from the directory `~/qmk_firmware/keyboards/custom_keyboard_v2/assets/original`:
 * `qmk painter-convert-graphics -f mono2 -o .. -i static_ui.png`
 * Requires Fish shell: `for file in (ls .); qmk painter-convert-graphics -f mono2 -o .. -i $file; end`
+
+## Update QMK Fork
+* First, follow update instructions here: https://docs.qmk.fm/newbs_git_using_your_master_branch
+* Then run this: `git submodule update --init --recursive` (not included in the above link for some reason)
