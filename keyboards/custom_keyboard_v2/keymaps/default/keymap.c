@@ -78,7 +78,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_QUOT, KC_COMM, KC_DOT,  KC_P,    KC_Y,    KC_F,    KC_G,    KC_C,    KC_R,    KC_L,
         KC_A,    KC_O,    KC_E,    KC_U,    KC_I,    KC_D,    KC_H,    KC_T,    KC_N,    KC_S,
         KC_SCLN, KC_Q,    KC_J,    KC_K,    KC_X,    KC_B,    KC_M,    KC_W,    KC_V,    KC_Z,
-        KC_NO,   KC_NO,   KC_LALT, KC_SPC,  KC_LCMD, KC_LCTL, MO(SYM), SFT_T(KC_CAPS),KC_NO,   KC_NO
+        KC_NO,   KC_NO,   KC_LALT, KC_SPC,  KC_LCMD, KC_LCTL, MO(SYM), KC_LSFT, KC_NO,   KC_NO
     ),
 
     [QWT] = LAYOUT_ortho_5x10(
@@ -93,7 +93,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_NO,   KC_PSCR, KC_PSLS, KC_PAST, KC_NO,   KC_APP,
         KC_BSLS, KC_GRV,  KC_LBRC, KC_RBRC, KC_ESC,  KC_NUM,  KC_P7,   KC_P8,   KC_P9,   KC_PMNS,
         KC_NUBS, KC_SLSH, KC_DEL,  KC_BSPC, KC_ENT,  KC_P0,   KC_P4,   KC_P5,   KC_P6,   KC_PPLS,
-        KC_NO,   KC_MINS, KC_EQL,  KC_TAB,  KC_NO,   KC_PDOT, KC_P1,   KC_P2,   KC_P3,   KC_PENT,
+        KC_NO,   KC_MINS, KC_EQL,  KC_TAB,  KC_CAPS, KC_PDOT, KC_P1,   KC_P2,   KC_P3,   KC_PENT,
         KC_NO,   KC_NO,   _______, QK_LLCK, _______, _______, MO(CTL), _______, KC_NO,   KC_NO
     ),
 
