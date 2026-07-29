@@ -6,7 +6,17 @@
 // LED data pin
 #define WS2812_DI_PIN GP15
 
-// Enable LED matrix paterns
+// Info about these here: https://docs.qmk.fm/tap_hold
+#define SPECULATIVE_HOLD
+
+// Effects anything that involves quickly taping a key multiple times
+#define QUICK_TAP_TERM 200
+
+// For layer tap toggle `TT(...)`.
+// https://docs.qmk.fm/feature_layers
+#define TAPPING_TOGGLE 2
+
+// Enable LED matrix patterns
 // NOTE TO SELF: Remember to update this list every now an then in case new animations get added
 #define ENABLE_RGB_MATRIX_NONE
 #define ENABLE_RGB_MATRIX_SOLID_COLOR               // 1.  Static single hue, no speed support
@@ -37,7 +47,7 @@
 #define ENABLE_RGB_MATRIX_HUE_BREATHING             // 26. Hue shifts up a slight ammount at the same time, then shifts back
 #define ENABLE_RGB_MATRIX_HUE_PENDULUM              // 27. Hue shifts up a slight ammount in a wave to the right, then back to the left
 #define ENABLE_RGB_MATRIX_HUE_WAVE                  // 28. Hue shifts up a slight ammount and then back down in a wave to the right
-#define ENABLE_RGB_MATRIX_PIXEL_FRACTAL             // 29. Single hue fractal filled keys pulsing horizontally out to edges
+#define ENABLE_RGB_MATRIX_PIXEL_FRACL             // 29. Single hue fractal filled keys pulsing horizontally out to edges
 #define ENABLE_RGB_MATRIX_PIXEL_FLOW                // 30. Pulsing RGB flow along LED wiring with random hues
 #define ENABLE_RGB_MATRIX_PIXEL_RAIN                // 31. Randomly light keys with random hues
 #define ENABLE_RGB_MATRIX_TYPING_HEATMAP            // 32. How hot is your WPM!
