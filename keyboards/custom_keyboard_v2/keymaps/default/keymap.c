@@ -35,7 +35,7 @@
 static painter_device_t display;
 
 static uint16_t display_sleep_timer; // I handle display sleep manually because QUANTUM_PAINTER_DISPLAY_TIMEOUT was not working for some reason
-#define DISPLAY_TIMEOUT 5000
+#define DISPLAY_TIMEOUT 8000
 #define DISPLAY_TIMEOUT_CHECK_FREQ 1000
 
 // Handles to images
