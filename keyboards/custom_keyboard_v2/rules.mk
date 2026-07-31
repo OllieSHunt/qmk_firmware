@@ -2,6 +2,10 @@
 WPM_ENABLE = yes
 LAYER_LOCK_ENABLE = yes
 
+# Enables N key rollover, but does not turn it on. That is done in config.h
+# (enabled in keyboard.json instead)
+# NKRO_ENABLE = yes
+
 # Bootloader selection
 BOOTLOADER = rp2040
 BOARD = GENERIC_RP_RP2040

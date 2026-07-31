@@ -1,3 +1,6 @@
+// Turns on N key rollover. Only works if enabled in rules.mk first.
+#define NKRO_DEFAULT_ON true
+
 // I2C config
 #define I2C_DRIVER I2CD0
 #define I2C1_SCL_PIN GP17
