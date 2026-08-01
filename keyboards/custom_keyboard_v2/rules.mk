@@ -1,3 +1,10 @@
+# Bootloader selection
+BOOTLOADER = rp2040
+BOARD = GENERIC_RP_RP2040
+
+# RGB LEDs
+WS2812_DRIVER = vendor
+
 # Misc features
 WPM_ENABLE = yes
 LAYER_LOCK_ENABLE = yes
@@ -6,12 +13,12 @@ LAYER_LOCK_ENABLE = yes
 # (enabled in keyboard.json instead)
 # NKRO_ENABLE = yes
 
-# Bootloader selection
-BOOTLOADER = rp2040
-BOARD = GENERIC_RP_RP2040
-
-# RGB LEDs
-WS2812_DRIVER = vendor
+# Stenography
+# https://docs.qmk.fm/features/stenography
+# (see also, alternative layout: geminipr)
+STENO_ENABLE = yes
+STENO_PROTOCOL = txbolt
+# STENO_COMBINEDMAP # TODO: Do I want to enable this?
 
 # Quantum painter config
 QUANTUM_PAINTER_ENABLE = yes

@@ -66,6 +66,7 @@ deferred_token draw_wpm_bar_token;
 enum KeyboardLayers {
     DVK, // Dvorak base layer
     QWT, // QWERTY base layer
+    STN, // Stenography base layer
     SYM, // Symbols layer
     CTL, // Control layer
 };
@@ -89,6 +90,22 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_NO,   KC_NO,   _______, _______, _______, _______, _______, _______, KC_NO,   KC_NO
     ),
 
+    // [STN] = LAYOUT_ortho_5x10(
+    //     KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   PDF(QWT), // TODO: TEMP:
+    //     STN_N1,  STN_N2,  STN_N3,  STN_N4,  STN_N5,  STN_N6,  STN_N7,  STN_N8,  STN_N9,  KC_NO,
+    //     STN_S1,  STN_TL,  STN_PL,  STN_HL,  STN_ST1, STN_FR,  STN_PR,  STN_LR,  STN_TR,  STN_DR,
+    //     STN_S2,  STN_KL,  STN_WL,  STN_RL,  STN_ST2, STN_RR,  STN_BR,  STN_GR,  STN_SR,  STN_ZR,
+    //     KC_NO,   KC_NO,   KC_NO,   STN_A,    STN_O,   STN_E,   STN_U,   KC_NO,   KC_NO,   KC_NO
+    // ),
+
+    [STN] = LAYOUT_ortho_5x10(
+        KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   PDF(QWT), // TODO: TEMP:
+        STN_NUM, STN_NUM, STN_NUM, STN_NUM, STN_STR, STN_STR, STN_NUM, STN_NUM, STN_NUM, STN_NUM,
+        KC_NO,   STN_SL,  STN_TL,  STN_PL,  STN_HL,  STN_FR,  STN_PR,  STN_LR,  STN_TR,  STN_DR,
+        KC_NO,   STN_SL,  STN_KL,  STN_WL,  STN_RL,  STN_RR,  STN_BR,  STN_GR,  STN_SR,  STN_ZR,
+        KC_NO,   KC_NO,   KC_NO,   STN_A,   STN_O,   STN_E,   STN_U,   KC_NO,   KC_NO,   KC_NO
+    ),
+
     [SYM] = LAYOUT_ortho_5x10(
         KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,
         KC_F11,  KC_GRV,  KC_MINS, KC_LBRC, KC_NUBS, KC_NUHS, KC_RBRC, KC_EQL,  KC_QUOT, KC_F12,
@@ -99,7 +116,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [CTL] = LAYOUT_ortho_5x10(
         RM_PREV, RM_SPDD, RM_VALD, RM_SATD, RM_HUED, RM_HUEU, RM_SATU, RM_VALU, RM_SPDU, RM_NEXT,
-        KC_PAST, KC_P7,   KC_P8,   KC_P9,   KC_PPLS, KC_PENT, PDF(QWT),PDF(DVK),KC_NO,   RM_TOGG,
+        KC_PAST, KC_P7,   KC_P8,   KC_P9,   KC_PPLS, KC_PENT, PDF(QWT),PDF(DVK),PDF(STN),RM_TOGG,
         KC_P0,   KC_P4,   KC_P5,   KC_P6,   KC_PDOT, KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_NO,
         KC_PSLS, KC_P1,   KC_P2,   KC_P3,   KC_PMNS, KC_PSCR, KC_INS,  KC_PAUS, EE_CLR,  QK_BOOT,
         KC_NO,   KC_NO,   _______, TG(CTL), _______, _______, KC_NO,   _______, KC_NO,   KC_NO
