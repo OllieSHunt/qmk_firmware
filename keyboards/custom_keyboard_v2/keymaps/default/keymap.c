@@ -7,6 +7,7 @@
 // - Stenography: https://docs.qmk.fm/features/stenography
 //   - Update the features list in the hardware repository to include this feature
 // - Autocorrect? https://docs.qmk.fm/features/autocorrect
+// - TODO: Improve the stenography symbol and control layers
 
 #include QMK_KEYBOARD_H
 
@@ -62,13 +63,18 @@ deferred_token draw_wpm_bar_token;
 
 #define WPM_BAR_REDRAW_FREQ 100
 
-// All layers on the keyboard
+// All layers on the keyboard.
+// The Devorak and QWERTY base layers share the same symbol and control layers. However, the Stenography base layer
+// needs it's own separate symbol and control layers because it's layer switching keys are in a different place.
 enum KeyboardLayers {
     DVK, // Dvorak base layer
     QWT, // QWERTY base layer
-    STN, // Stenography base layer
     SYM, // Symbols layer
     CTL, // Control layer
+
+    STN,  // Stenography base layer
+    SSYM, // Symbols layer (stenography)
+    SCTL, // Control layer (stenography)
 };
 
 // Keymap
@@ -79,7 +85,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_SLSH, KC_COMM, KC_DOT,  KC_P,    KC_Y,    KC_F,    KC_G,    KC_C,    KC_R,    KC_L,
         KC_A,    KC_O,    KC_E,    KC_U,    KC_I,    KC_D,    KC_H,    KC_T,    KC_N,    KC_S,
         KC_SCLN, KC_Q,    KC_J,    KC_K,    KC_X,    KC_B,    KC_M,    KC_W,    KC_V,    KC_Z,
-        KC_NO,   KC_NO,   KC_LCMD, KC_SPC,  KC_LCTL, KC_LSFT, TT(SYM), KC_LALT, KC_NO,   KC_NO
+        XXXXXXX, XXXXXXX, KC_LCMD, KC_SPC,  KC_LCTL, KC_LSFT, TT(SYM), KC_LALT, XXXXXXX, XXXXXXX
     ),
 
     [QWT] = LAYOUT_ortho_5x10(
@@ -87,39 +93,47 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,
         KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN,
         KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH,
-        KC_NO,   KC_NO,   _______, _______, _______, _______, _______, _______, KC_NO,   KC_NO
-    ),
-
-    // [STN] = LAYOUT_ortho_5x10(
-    //     KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   PDF(QWT), // TODO: TEMP:
-    //     STN_N1,  STN_N2,  STN_N3,  STN_N4,  STN_N5,  STN_N6,  STN_N7,  STN_N8,  STN_N9,  KC_NO,
-    //     STN_S1,  STN_TL,  STN_PL,  STN_HL,  STN_ST1, STN_FR,  STN_PR,  STN_LR,  STN_TR,  STN_DR,
-    //     STN_S2,  STN_KL,  STN_WL,  STN_RL,  STN_ST2, STN_RR,  STN_BR,  STN_GR,  STN_SR,  STN_ZR,
-    //     KC_NO,   KC_NO,   KC_NO,   STN_A,    STN_O,   STN_E,   STN_U,   KC_NO,   KC_NO,   KC_NO
-    // ),
-
-    [STN] = LAYOUT_ortho_5x10(
-        KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   PDF(QWT), // TODO: TEMP:
-        STN_NUM, STN_NUM, STN_NUM, STN_NUM, STN_STR, STN_STR, STN_NUM, STN_NUM, STN_NUM, STN_NUM,
-        KC_NO,   STN_SL,  STN_TL,  STN_PL,  STN_HL,  STN_FR,  STN_PR,  STN_LR,  STN_TR,  STN_DR,
-        KC_NO,   STN_SL,  STN_KL,  STN_WL,  STN_RL,  STN_RR,  STN_BR,  STN_GR,  STN_SR,  STN_ZR,
-        KC_NO,   KC_NO,   KC_NO,   STN_A,   STN_O,   STN_E,   STN_U,   KC_NO,   KC_NO,   KC_NO
+        XXXXXXX, XXXXXXX, _______, _______, _______, _______, _______, _______, XXXXXXX, XXXXXXX
     ),
 
     [SYM] = LAYOUT_ortho_5x10(
         KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,
         KC_F11,  KC_GRV,  KC_MINS, KC_LBRC, KC_NUBS, KC_NUHS, KC_RBRC, KC_EQL,  KC_QUOT, KC_F12,
         KC_ESC,  KC_TAB,  KC_DEL,  KC_BSPC, KC_ENT,  KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_APP,
-        _______, _______, _______, _______, _______, _______, KC_CAPS, KC_NUM,  KC_SCRL, _______,
-        KC_NO,   KC_NO,   _______, TT(CTL), _______, _______, TG(SYM), _______, KC_NO,   KC_NO
+        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_CAPS, KC_NUM,  KC_SCRL, XXXXXXX,
+        XXXXXXX, XXXXXXX, _______, TT(CTL), _______, _______, TG(SYM), _______, XXXXXXX, XXXXXXX
     ),
 
     [CTL] = LAYOUT_ortho_5x10(
         RM_PREV, RM_SPDD, RM_VALD, RM_SATD, RM_HUED, RM_HUEU, RM_SATU, RM_VALU, RM_SPDU, RM_NEXT,
         KC_PAST, KC_P7,   KC_P8,   KC_P9,   KC_PPLS, KC_PENT, PDF(QWT),PDF(DVK),PDF(STN),RM_TOGG,
-        KC_P0,   KC_P4,   KC_P5,   KC_P6,   KC_PDOT, KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_NO,
+        KC_P0,   KC_P4,   KC_P5,   KC_P6,   KC_PDOT, KC_HOME, KC_PGDN, KC_PGUP, KC_END,  XXXXXXX,
         KC_PSLS, KC_P1,   KC_P2,   KC_P3,   KC_PMNS, KC_PSCR, KC_INS,  KC_PAUS, EE_CLR,  QK_BOOT,
-        KC_NO,   KC_NO,   _______, TG(CTL), _______, _______, KC_NO,   _______, KC_NO,   KC_NO
+        XXXXXXX, XXXXXXX, _______, TG(CTL), _______, _______, XXXXXXX, _______, XXXXXXX, XXXXXXX
+    ),
+
+    [STN] = LAYOUT_ortho_5x10(
+        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+        STN_NUM, STN_NUM, STN_NUM, STN_NUM, STN_STR, STN_STR, STN_NUM, STN_NUM, STN_NUM, STN_NUM,
+        XXXXXXX, STN_SL,  STN_TL,  STN_PL,  STN_HL,  STN_FR,  STN_PR,  STN_LR,  STN_TR,  STN_DR,
+        XXXXXXX, STN_SL,  STN_KL,  STN_WL,  STN_RL,  STN_RR,  STN_BR,  STN_GR,  STN_SR,  STN_ZR,
+        XXXXXXX, XXXXXXX, TT(SCTL),STN_A,   STN_O,   STN_E,   STN_U,   TT(SSYM),XXXXXXX, XXXXXXX
+    ),
+
+    [SSYM] = LAYOUT_ortho_5x10(
+        KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,
+        KC_F11,  KC_GRV,  KC_MINS, KC_LBRC, KC_NUBS, KC_NUHS, KC_RBRC, KC_EQL,  KC_QUOT, KC_F12,
+        KC_ESC,  KC_TAB,  KC_DEL,  KC_BSPC, KC_ENT,  KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_APP,
+        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_CAPS, KC_NUM,  KC_SCRL, XXXXXXX,
+        XXXXXXX, XXXXXXX, TT(SCTL),KC_LCMD, KC_LCTL, KC_LSFT, KC_LALT, TG(SSYM),XXXXXXX, XXXXXXX
+    ),
+
+    [SCTL] = LAYOUT_ortho_5x10(
+        RM_PREV, RM_SPDD, RM_VALD, RM_SATD, RM_HUED, RM_HUEU, RM_SATU, RM_VALU, RM_SPDU, RM_NEXT,
+        KC_PAST, KC_P7,   KC_P8,   KC_P9,   KC_PPLS, KC_PENT, PDF(QWT),PDF(DVK),PDF(STN),RM_TOGG,
+        KC_P0,   KC_P4,   KC_P5,   KC_P6,   KC_PDOT, KC_HOME, KC_PGDN, KC_PGUP, KC_END,  XXXXXXX,
+        KC_PSLS, KC_P1,   KC_P2,   KC_P3,   KC_PMNS, KC_PSCR, KC_INS,  KC_PAUS, EE_CLR,  QK_BOOT,
+        XXXXXXX, XXXXXXX, TG(SCTL),KC_LCMD, KC_LCTL, KC_LSFT, KC_LALT, TT(SSYM),XXXXXXX, XXXXXXX
     ),
 
     // NEW LAYER TEMPLATE
@@ -128,7 +142,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
     //     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
     //     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
-    //     KC_NO,   KC_NO,   _______, _______, _______, _______, _______, _______, KC_NO,   KC_NO
+    //     XXXXXXX, XXXXXXX, _______, _______, _______, _______, _______, _______, XXXXXXX, XXXXXXX
     // ),
 };
 
@@ -145,13 +159,15 @@ void draw_default_layer_image(layer_state_t state) {
 // Draws the indicators to show what layers are active (not to be confused with
 // the default layer indicator which shows what the current default layer is).
 void draw_layer_image(layer_state_t state) {
-    // Symbol layer
-    if (IS_LAYER_ON_STATE(state, SYM)) qp_drawimage(display, 30, 29, checkbox_yes_img);
-    else                               qp_drawimage(display, 30, 29, checkbox_no_img);
+    // Symbol layer or stenography symbol layer
+    if (IS_LAYER_ON_STATE(state, SYM)
+        || IS_LAYER_ON_STATE(state, SSYM)) qp_drawimage(display, 30, 29, checkbox_yes_img);
+    else                                   qp_drawimage(display, 30, 29, checkbox_no_img);
 
-    // Control layer
-    if (IS_LAYER_ON_STATE(state, CTL)) qp_drawimage(display, 30, 40, checkbox_yes_img);
-    else                               qp_drawimage(display, 30, 40, checkbox_no_img);
+    // Control layer or stenography control layer
+    if (IS_LAYER_ON_STATE(state, CTL)
+        || IS_LAYER_ON_STATE(state, SCTL)) qp_drawimage(display, 30, 40, checkbox_yes_img);
+    else                                   qp_drawimage(display, 30, 40, checkbox_no_img);
 
     qp_flush(display);
 }
