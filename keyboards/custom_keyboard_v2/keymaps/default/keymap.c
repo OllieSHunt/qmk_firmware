@@ -3,10 +3,9 @@
 
 // TODO:
 // - Make the RGB_MATRIX_SOLID_REACTIVE_GRADIENT_MODE togglable at runtime using custom code
-// - Change some specific LEDs when on different layers or states (e.g. caps lock)
 // - Stenography: https://docs.qmk.fm/features/stenography
 //   - Update the features list in the hardware repository to include this feature
-// - Autocorrect? https://docs.qmk.fm/features/autocorrect
+// - Make it so that draw_hsl_bars() and draw_rgb_mode_indicator() are not called after every single keystroke
 
 #include QMK_KEYBOARD_H
 
@@ -373,7 +372,7 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
     // Redraw the WPM bar by making the deferred callback run early
     extend_deferred_exec(draw_wpm_bar_token, 1);
 
-    // TEMP: Move somewhere else so it is not run every keystroke
+    // TODO: Move somewhere else so it is not run every keystroke
     draw_hsl_bars();
     draw_rgb_mode_indicator();
 
