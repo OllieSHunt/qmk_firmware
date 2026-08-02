@@ -7,7 +7,6 @@
 // - Stenography: https://docs.qmk.fm/features/stenography
 //   - Update the features list in the hardware repository to include this feature
 // - Autocorrect? https://docs.qmk.fm/features/autocorrect
-// - TODO: Improve the stenography symbol and control layers
 
 #include QMK_KEYBOARD_H
 
@@ -15,7 +14,6 @@
 #include "assets/static_ui.qgf.h"
 #include "assets/mode_dvorak.qgf.h"
 #include "assets/mode_qwerty.qgf.h"
-#include "assets/mode_stenography.qgf.h"
 #include "assets/checkbox_no.qgf.h"
 #include "assets/checkbox_yes.qgf.h"
 #include "assets/caps_off.qgf.h"
@@ -43,7 +41,6 @@ static uint16_t display_sleep_timer; // I handle display sleep manually because 
 static painter_image_handle_t static_ui_img;
 static painter_image_handle_t mode_dvorak_img;
 static painter_image_handle_t mode_qwerty_img;
-static painter_image_handle_t mode_stenography_img;
 static painter_image_handle_t checkbox_no_img;
 static painter_image_handle_t checkbox_yes_img;
 static painter_image_handle_t caps_off_img;
@@ -128,9 +125,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // Draws the default state indicator
 void draw_default_layer_image(layer_state_t state) {
     // Find what the default layer is
-    if (IS_LAYER_ON_STATE(state, DVK))      qp_drawimage(display, 0, 0, mode_dvorak_img);
-    else if (IS_LAYER_ON_STATE(state, QWT)) qp_drawimage(display, 0, 0, mode_qwerty_img);
-    else                                    qp_drawimage(display, 0, 0, mode_stenography_img);
+    if (IS_LAYER_ON_STATE(state, DVK)) qp_drawimage(display, 0, 0, mode_dvorak_img);
+    else                               qp_drawimage(display, 0, 0, mode_qwerty_img);
 
     qp_flush(display);
 }
@@ -184,17 +180,17 @@ void draw_lock_indicators(led_t led_state) {
 // Uses a deferred callback to redraw the bar that measures words per minute.
 // https://docs.qmk.fm/custom_quantum_functions#deferred-executor-callbacks
 uint32_t draw_wpm_bar(uint32_t trigger_time, void *cb_arg) {
-    const uint8_t max_bar_length = 83; // Max bar length in pixels
-    const float max_wpm = 100.0;       // The highest wpm value on the scale
+    const uint8_t max_bar_length = 81; // Max bar length in pixels
+    const float max_wpm = 200.0;       // The highest wpm value on the scale
     float wpm = (float)get_current_wpm();
 
     uint8_t bar_length = (uint8_t)((wpm / max_wpm) * (float)max_bar_length);
 
     // Draw black box over old bar to erase it
-    qp_rect(display, 44, 61, 44 + max_bar_length - 1, 63, 0, 0, 0, true);
+    qp_rect(display, 45, 61, 45 + max_bar_length - 1, 63, 0, 0, 0, true);
 
     // Draw WPM bar
-    qp_rect(display, 44, 61, 44 + bar_length - 1, 63, 0, 255, 255, true);
+    qp_rect(display, 45, 61, 45 + bar_length - 1, 63, 0, 255, 255, true);
 
     qp_flush(display);
 
@@ -312,7 +308,6 @@ void keyboard_post_init_kb(void) {
     static_ui_img = qp_load_image_mem(gfx_static_ui);
     mode_dvorak_img = qp_load_image_mem(gfx_mode_dvorak);
     mode_qwerty_img = qp_load_image_mem(gfx_mode_qwerty);
-    mode_stenography_img = qp_load_image_mem(gfx_mode_stenography);
     checkbox_no_img = qp_load_image_mem(gfx_checkbox_no);
     checkbox_yes_img = qp_load_image_mem(gfx_checkbox_yes);
     caps_off_img = qp_load_image_mem(gfx_caps_off);
