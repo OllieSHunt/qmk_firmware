@@ -3,8 +3,6 @@
 
 // TODO:
 // - Make the RGB_MATRIX_SOLID_REACTIVE_GRADIENT_MODE togglable at runtime using custom code
-// - Stenography: https://docs.qmk.fm/features/stenography
-//   - Update the features list in the hardware repository to include this feature
 // - Make it so that draw_hsl_bars() and draw_rgb_mode_indicator() are not called after every single keystroke
 
 #include QMK_KEYBOARD_H
