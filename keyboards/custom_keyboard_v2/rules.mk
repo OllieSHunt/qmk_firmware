@@ -18,7 +18,6 @@ LAYER_LOCK_ENABLE = yes
 # (see also, alternative layout: geminipr)
 STENO_ENABLE = yes
 STENO_PROTOCOL = txbolt
-# STENO_COMBINEDMAP # TODO: Do I want to enable this?
 
 # Quantum painter config
 QUANTUM_PAINTER_ENABLE = yes

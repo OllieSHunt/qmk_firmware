@@ -13,7 +13,7 @@
 #define SPECULATIVE_HOLD
 
 // Effects anything that involves quickly taping a key multiple times
-#define QUICK_TAP_TERM 200
+#define QUICK_TAP_TERM 100
 
 // For layer tap toggle `TT(...)`.
 // https://docs.qmk.fm/feature_layers

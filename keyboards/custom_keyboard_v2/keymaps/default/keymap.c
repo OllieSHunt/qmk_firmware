@@ -64,17 +64,12 @@ deferred_token draw_wpm_bar_token;
 #define WPM_BAR_REDRAW_FREQ 100
 
 // All layers on the keyboard.
-// The Devorak and QWERTY base layers share the same symbol and control layers. However, the Stenography base layer
-// needs it's own separate symbol and control layers because it's layer switching keys are in a different place.
 enum KeyboardLayers {
     DVK, // Dvorak base layer
     QWT, // QWERTY base layer
     SYM, // Symbols layer
     CTL, // Control layer
-
-    STN,  // Stenography base layer
-    SSYM, // Symbols layer (stenography)
-    SCTL, // Control layer (stenography)
+    STN, // Stenography layer
 };
 
 // Keymap
@@ -106,7 +101,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [CTL] = LAYOUT_ortho_5x10(
         RM_PREV, RM_SPDD, RM_VALD, RM_SATD, RM_HUED, RM_HUEU, RM_SATU, RM_VALU, RM_SPDU, RM_NEXT,
-        KC_PAST, KC_P7,   KC_P8,   KC_P9,   KC_PPLS, KC_PENT, PDF(QWT),PDF(DVK),PDF(STN),RM_TOGG,
+        KC_PAST, KC_P7,   KC_P8,   KC_P9,   KC_PPLS, KC_PENT, PDF(QWT),PDF(DVK),TG(STN), RM_TOGG,
         KC_P0,   KC_P4,   KC_P5,   KC_P6,   KC_PDOT, KC_HOME, KC_PGDN, KC_PGUP, KC_END,  XXXXXXX,
         KC_PSLS, KC_P1,   KC_P2,   KC_P3,   KC_PMNS, KC_PSCR, KC_INS,  KC_PAUS, EE_CLR,  QK_BOOT,
         XXXXXXX, XXXXXXX, _______, TG(CTL), _______, _______, XXXXXXX, _______, XXXXXXX, XXXXXXX
@@ -117,23 +112,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         STN_NUM, STN_NUM, STN_NUM, STN_NUM, STN_STR, STN_STR, STN_NUM, STN_NUM, STN_NUM, STN_NUM,
         XXXXXXX, STN_SL,  STN_TL,  STN_PL,  STN_HL,  STN_FR,  STN_PR,  STN_LR,  STN_TR,  STN_DR,
         XXXXXXX, STN_SL,  STN_KL,  STN_WL,  STN_RL,  STN_RR,  STN_BR,  STN_GR,  STN_SR,  STN_ZR,
-        XXXXXXX, XXXXXXX, TT(SCTL),STN_A,   STN_O,   STN_E,   STN_U,   TT(SSYM),XXXXXXX, XXXXXXX
-    ),
-
-    [SSYM] = LAYOUT_ortho_5x10(
-        KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,
-        KC_F11,  KC_GRV,  KC_MINS, KC_LBRC, KC_NUBS, KC_NUHS, KC_RBRC, KC_EQL,  KC_QUOT, KC_F12,
-        KC_ESC,  KC_TAB,  KC_DEL,  KC_BSPC, KC_ENT,  KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_APP,
-        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_CAPS, KC_NUM,  KC_SCRL, XXXXXXX,
-        XXXXXXX, XXXXXXX, TT(SCTL),KC_LCMD, KC_LCTL, KC_LSFT, KC_LALT, TG(SSYM),XXXXXXX, XXXXXXX
-    ),
-
-    [SCTL] = LAYOUT_ortho_5x10(
-        RM_PREV, RM_SPDD, RM_VALD, RM_SATD, RM_HUED, RM_HUEU, RM_SATU, RM_VALU, RM_SPDU, RM_NEXT,
-        KC_PAST, KC_P7,   KC_P8,   KC_P9,   KC_PPLS, KC_PENT, PDF(QWT),PDF(DVK),PDF(STN),RM_TOGG,
-        KC_P0,   KC_P4,   KC_P5,   KC_P6,   KC_PDOT, KC_HOME, KC_PGDN, KC_PGUP, KC_END,  XXXXXXX,
-        KC_PSLS, KC_P1,   KC_P2,   KC_P3,   KC_PMNS, KC_PSCR, KC_INS,  KC_PAUS, EE_CLR,  QK_BOOT,
-        XXXXXXX, XXXXXXX, TG(SCTL),KC_LCMD, KC_LCTL, KC_LSFT, KC_LALT, TT(SSYM),XXXXXXX, XXXXXXX
+        XXXXXXX, XXXXXXX, TG(STN), STN_A,   STN_O,   STN_E,   STN_U,   TG(STN), XXXXXXX, XXXXXXX
     ),
 
     // NEW LAYER TEMPLATE
@@ -160,14 +139,12 @@ void draw_default_layer_image(layer_state_t state) {
 // the default layer indicator which shows what the current default layer is).
 void draw_layer_image(layer_state_t state) {
     // Symbol layer or stenography symbol layer
-    if (IS_LAYER_ON_STATE(state, SYM)
-        || IS_LAYER_ON_STATE(state, SSYM)) qp_drawimage(display, 30, 29, checkbox_yes_img);
-    else                                   qp_drawimage(display, 30, 29, checkbox_no_img);
+    if (IS_LAYER_ON_STATE(state, SYM)) qp_drawimage(display, 30, 29, checkbox_yes_img);
+    else                               qp_drawimage(display, 30, 29, checkbox_no_img);
 
     // Control layer or stenography control layer
-    if (IS_LAYER_ON_STATE(state, CTL)
-        || IS_LAYER_ON_STATE(state, SCTL)) qp_drawimage(display, 30, 40, checkbox_yes_img);
-    else                                   qp_drawimage(display, 30, 40, checkbox_no_img);
+    if (IS_LAYER_ON_STATE(state, CTL)) qp_drawimage(display, 30, 40, checkbox_yes_img);
+    else                               qp_drawimage(display, 30, 40, checkbox_no_img);
 
     qp_flush(display);
 }
