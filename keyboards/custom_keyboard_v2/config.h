@@ -96,7 +96,7 @@
 // #define RGB_MATRIX_SOLID_REACTIVE_GRADIENT_MODE
 
 // Quantum painter config
-#define QUANTUM_PAINTER_NUM_IMAGES 16
+#define QUANTUM_PAINTER_NUM_IMAGES 17
 
 // Words per minute config
 #define WPM_SAMPLE_SECONDS 4

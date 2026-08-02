@@ -19,7 +19,8 @@ LAYER_LOCK_ENABLE = yes
 STENO_ENABLE = yes
 STENO_PROTOCOL = txbolt
 
-# Quantum painter config
+# Quantum painter
+# https://docs.qmk.fm/quantum_painter
 QUANTUM_PAINTER_ENABLE = yes
 
 # This setting seems to have no effect, so I have implmented this manualy
@@ -29,6 +30,8 @@ QUANTUM_PAINTER_ENABLE = yes
 QUANTUM_PAINTER_DRIVERS += sh1106_i2c
 
 # Images
+# IMPORTANT: If adding new images, then also update `QUANTUM_PAINTER_NUM_IMAGES` in config.h!!!
+#            (I've just wasted a very large chunk of my afternoon with this)
 SRC += assets/static_ui.qgf.c
 SRC += assets/mode_dvorak.qgf.c
 SRC += assets/mode_qwerty.qgf.c
@@ -44,3 +47,5 @@ SRC += assets/seperator_off_off.qgf.c
 SRC += assets/seperator_on_off.qgf.c
 SRC += assets/seperator_off_on.qgf.c
 SRC += assets/seperator_on_on.qgf.c
+SRC += assets/steno_indicator.qgf.c
+SRC += assets/layers_list.qgf.c

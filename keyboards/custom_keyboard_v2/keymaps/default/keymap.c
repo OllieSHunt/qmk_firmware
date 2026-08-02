@@ -7,6 +7,7 @@
 // - Stenography: https://docs.qmk.fm/features/stenography
 //   - Update the features list in the hardware repository to include this feature
 // - Autocorrect? https://docs.qmk.fm/features/autocorrect
+// - Try QUANTUM_PAINTER_DISPLAY_TIMEOUT in config.h instead of rules.mk. This might allow me to remove my custom display timeout check.
 
 #include QMK_KEYBOARD_H
 
@@ -26,6 +27,8 @@
 #include "assets/seperator_on_off.qgf.h"
 #include "assets/seperator_off_on.qgf.h"
 #include "assets/seperator_on_on.qgf.h"
+#include "assets/steno_indicator.qgf.h"
+#include "assets/layers_list.qgf.h"
 
 // The address of the SSD1306 128x65 OLED
 #define DISPLAY_I2C_ADDRESS 0x3C
@@ -53,6 +56,8 @@ static painter_image_handle_t seperator_off_off_img;
 static painter_image_handle_t seperator_on_off_img;
 static painter_image_handle_t seperator_off_on_img;
 static painter_image_handle_t seperator_on_on_img;
+static painter_image_handle_t steno_indicator_img;
+static painter_image_handle_t layers_list_img;
 
 // Deferred executor tokens
 deferred_token display_sleep_check_token;
@@ -133,14 +138,25 @@ void draw_default_layer_image(layer_state_t state) {
 
 // Draws the indicators to show what layers are active (not to be confused with
 // the default layer indicator which shows what the current default layer is).
+//
+// The stenography layer is special as its drawn over the top of this whole
+// section of the UI.
 void draw_layer_image(layer_state_t state) {
-    // Symbol layer or stenography symbol layer
-    if (IS_LAYER_ON_STATE(state, SYM)) qp_drawimage(display, 30, 29, checkbox_yes_img);
-    else                               qp_drawimage(display, 30, 29, checkbox_no_img);
+    // Should regular layers be drawn or should the steno indicator be drawn?
+    if (IS_LAYER_ON_STATE(state, STN)) {
+        qp_drawimage(display, 0, 13, steno_indicator_img);
+    } else {
+        // Redrawing static UI elements here to overwrite the steno indicator
+        qp_drawimage(display, 0, 13, layers_list_img);
 
-    // Control layer or stenography control layer
-    if (IS_LAYER_ON_STATE(state, CTL)) qp_drawimage(display, 30, 40, checkbox_yes_img);
-    else                               qp_drawimage(display, 30, 40, checkbox_no_img);
+        // Symbol layer or stenography symbol layer
+        if (IS_LAYER_ON_STATE(state, SYM)) qp_drawimage(display, 30, 29, checkbox_yes_img);
+        else                               qp_drawimage(display, 30, 29, checkbox_no_img);
+
+        // Control layer or stenography control layer
+        if (IS_LAYER_ON_STATE(state, CTL)) qp_drawimage(display, 30, 40, checkbox_yes_img);
+        else                               qp_drawimage(display, 30, 40, checkbox_no_img);
+    }
 
     qp_flush(display);
 }
@@ -320,6 +336,8 @@ void keyboard_post_init_kb(void) {
     seperator_on_off_img = qp_load_image_mem(gfx_seperator_on_off);
     seperator_off_on_img = qp_load_image_mem(gfx_seperator_off_on);
     seperator_on_on_img = qp_load_image_mem(gfx_seperator_on_on);
+    steno_indicator_img = qp_load_image_mem(gfx_steno_indicator);
+    layers_list_img = qp_load_image_mem(gfx_layers_list);
 
     // Regularly update the WPM bar on the screen
     draw_wpm_bar_token = defer_exec(WPM_BAR_REDRAW_FREQ, draw_wpm_bar, NULL);
