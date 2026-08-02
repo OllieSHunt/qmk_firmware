@@ -97,6 +97,7 @@
 
 // Quantum painter config
 #define QUANTUM_PAINTER_NUM_IMAGES 17
+#define QUANTUM_PAINTER_DISPLAY_TIMEOUT 8000
 
 // Words per minute config
 #define WPM_SAMPLE_SECONDS 4

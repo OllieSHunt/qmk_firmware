@@ -7,7 +7,6 @@
 // - Stenography: https://docs.qmk.fm/features/stenography
 //   - Update the features list in the hardware repository to include this feature
 // - Autocorrect? https://docs.qmk.fm/features/autocorrect
-// - Try QUANTUM_PAINTER_DISPLAY_TIMEOUT in config.h instead of rules.mk. This might allow me to remove my custom display timeout check.
 
 #include QMK_KEYBOARD_H
 
@@ -36,10 +35,6 @@
 // Display for quantum painter
 static painter_device_t display;
 
-static uint16_t display_sleep_timer; // I handle display sleep manually because QUANTUM_PAINTER_DISPLAY_TIMEOUT was not working for some reason
-#define DISPLAY_TIMEOUT 8000
-#define DISPLAY_TIMEOUT_CHECK_FREQ 1000
-
 // Handles to images
 static painter_image_handle_t static_ui_img;
 static painter_image_handle_t mode_dvorak_img;
@@ -60,7 +55,6 @@ static painter_image_handle_t steno_indicator_img;
 static painter_image_handle_t layers_list_img;
 
 // Deferred executor tokens
-deferred_token display_sleep_check_token;
 deferred_token draw_wpm_bar_token;
 
 #define WPM_BAR_REDRAW_FREQ 100
@@ -294,31 +288,11 @@ void draw_whole_screen(void) {
     extend_deferred_exec(draw_wpm_bar_token, 1);
 }
 
-// Uses a deferred callback to check if the display should go to sleep
-// https://docs.qmk.fm/custom_quantum_functions#deferred-executor-callbacks
-uint32_t display_sleep_check(uint32_t trigger_time, void *cb_arg) {
-    // Check if display needs to go to sleep
-    if (timer_elapsed(display_sleep_timer) > DISPLAY_TIMEOUT) {
-        // Reset timer
-        display_sleep_timer = timer_read();
-
-        // Turn off the display
-        qp_power(display, false);
-    }
-
-    // Call this function again after the same amount of time
-    return DISPLAY_TIMEOUT_CHECK_FREQ;
-}
-
 // Run on startup
 void keyboard_post_init_kb(void) {
     // Setup quantum painter
     display = qp_sh1106_make_i2c_device(128, 64, DISPLAY_I2C_ADDRESS);
     qp_init(display, QP_ROTATION_0);
-
-    // Display sleeping
-    display_sleep_timer = timer_read();
-    display_sleep_check_token = defer_exec(DISPLAY_TIMEOUT_CHECK_FREQ, display_sleep_check, NULL);
 
     // Load images
     static_ui_img = qp_load_image_mem(gfx_static_ui);
@@ -396,10 +370,6 @@ bool led_update_kb(led_t led_state) {
 
 // Called on key press
 bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
-    // Reset OLED sleep timer
-    display_sleep_timer = timer_read();
-    qp_power(display, true);
-
     // Redraw the WPM bar by making the deferred callback run early
     extend_deferred_exec(draw_wpm_bar_token, 1);
 
